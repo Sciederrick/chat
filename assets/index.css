@@ -12,16 +12,16 @@
 
 @layer components {
     .btn {
-        @apply px-4 py-2 shadow-none shadow-md font-semibold;
+        @apply px-2 py-2 shadow-none shadow-md font-semibold rounded-md md:px-4;
     }
     .btn-red {
-        @apply bg-[--mid-red] text-white rounded-md hover:bg-[--deep-red];
+        @apply bg-[--mid-red] text-white hover:bg-[--deep-red];
     }   
     .btn-black {
-        @apply bg-gray-800 text-white rounded-md hover:bg-gray-600;
+        @apply bg-gray-800 text-white hover:bg-gray-600;
     }
-    .btn-white--circle {
-        @apply rounded-full px-2 hover:bg-gray-400;
+    .btn-white {
+        @apply bg-white hover:bg-gray-200;
     }
     .heading-2 {
         @apply font-bold text-xl;
