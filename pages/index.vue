@@ -1,32 +1,39 @@
 <script setup lang="ts">
 const me = ref({
     avatar: null,
-    name: "Derrick Mbarani"
+    name: "Derrick Mbarani",
+    color: getHexRandomColor()
 });
 const users = ref([
     {
         avatar: null,
-        name: "Ernest Hanson"
+        name: "Ernest Hanson",
+        color: getHexRandomColor()
     },
     {
         avatar: null,
-        name: "Brian Abwenje"
+        name: "Brian Abwenje",
+        color: getHexRandomColor()
     }, {
         avatar: null,
-        name: "Josephine Nabwire"
+        name: "Josephine Nabwire",
+        color: getHexRandomColor()
     }, {
         avatar: null,
-        name: "Leila Adams"
+        name: "Leila Adams",
+        color: getHexRandomColor()
     },
 ]);
 const groups = ref([
     {
         avatar: null,
-        name: "TensorFlow"
+        name: "TensorFlow",
+        color: getHexRandomColor()
     },
     {
         avatar: null,
-        name: "Data Cleaning"
+        name: "Data Cleaning",
+        color: getHexRandomColor()
     }
 ]);
 
@@ -34,6 +41,15 @@ function getInitials(fullName: string): string {
     let initials = "";
     fullName.split(" ").forEach(name => initials += name.charAt(0).toUpperCase());
     return initials
+}
+
+function getHexRandomColor() {
+    const letters = '0123456789ABCDEF';
+    let color = '#';
+    for (let i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
 }
 </script>
 <template>
@@ -47,10 +63,11 @@ function getInitials(fullName: string): string {
     <main>
         <aside class="px-4">
             <ul class="divide-y">
-                <li v-for="group in groups" class="flex items-center gap-x-4 py-1 font-bold">
+                <li v-for="group in  groups " class="flex items-center gap-x-4 py-1 font-bold">
                     <img class="h-10 w-10" :src="group.avatar" alt="" v-if="group.avatar">
-                    <div class="h-10 w-10 rounded-full flex items-center justify-center bg-gray-200" v-else>{{
-                        getInitials(group.name) }}</div>
+                    <div :style="`border:1.5px solid ${group.color}`"
+                        class="h-10 w-10 rounded-full flex items-center justify-center" v-else>{{
+                            getInitials(group.name) }}</div>
                     <div>{{ group.name }}</div>
                 </li>
             </ul>
@@ -59,10 +76,11 @@ function getInitials(fullName: string): string {
                 <div class="w-full h-[0.5px] bg-gray-200">&nbsp;</div>
             </div>
             <ul class="divide-y">
-                <li v-for="user in users" class="flex items-center gap-x-4 py-1 font-bold">
+                <li v-for=" user  in  users " class="flex items-center gap-x-4 py-1 font-bold">
                     <img class="h-10 w-10" :src="user.avatar" alt="" v-if="user.avatar">
-                    <div class="h-10 w-10 rounded-full flex items-center justify-center bg-gray-200" v-else>{{
-                        getInitials(user.name) }}</div>
+                    <div :style="`border:1.5px solid ${user.color}`"
+                        class="h-10 w-10 rounded-full flex items-center justify-center bg-gray-200" v-else>{{
+                            getInitials(user.name) }}</div>
                     <div>{{ user.name }}</div>
                 </li>
             </ul>
