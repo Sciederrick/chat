@@ -157,11 +157,7 @@ const messages = ref([
             <ul class="divide-y">
                 <li v-for="group in groups" class="flex items-center gap-x-4 py-1.5 font-bold"
                     @click="viewConversation(group.conversationId)">
-                    <img class="h-10 w-10" :src="group.avatar" alt="" v-if="group.avatar" />
-                    <div :style="`border:1.5px solid ${group.color}`"
-                        class="h-10 w-10 rounded-full flex items-center justify-center" v-else>
-                        {{ getInitials(group.name) }}
-                    </div>
+                    <img class="h-8 w-8" src="~/assets/hash.svg" alt="group avatar" />
                     <div>{{ group.name }}</div>
                 </li>
             </ul>
