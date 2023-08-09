@@ -1,3 +1,29 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  :root {
+    --red: #FF0000;
+    --mid-red: #ED2647;
+    --deep-red: #CA3433;    
+  }
+}
+
+@layer components {
+    .btn {
+        @apply px-4 py-2 shadow-none shadow-md font-semibold;
+    }
+    .btn-red {
+        @apply bg-[--mid-red] text-white rounded-md hover:bg-[--deep-red];
+    }   
+    .btn-black {
+        @apply bg-gray-800 text-white rounded-md hover:bg-gray-600;
+    }
+    .btn-white--circle {
+        @apply rounded-full px-2 hover:bg-gray-400;
+    }
+    .heading-2 {
+        @apply font-bold text-xl;
+    }
+}
