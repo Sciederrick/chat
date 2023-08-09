@@ -142,9 +142,11 @@ const messages = ref([
 <template>
     <header class="flex justify-between items-center py-4 px-2">
         <img src="~/assets/logo-no-background.svg" height="60" width="160" alt="company logo" />
-        <div>
+        <div class="md:flex md:gap-4 md:items-center">
             <img src="~/assets/avatar.svg" height="35" width="35" alt="user avatar" />
-            <p class="text-xs text-center">{{ getInitials(me.name) }}</p>
+            <p class="text-xs text-center md:text-xl md:order-first md:font-semibold">
+                {{ getInitials(me.name) }}
+            </p>
         </div>
     </header>
     <main class="md:flex">
