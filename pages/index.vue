@@ -205,7 +205,8 @@ const messages = ref([
                         <div :style="[msg.senderId == 'e' ? `background-color:${lightenHexColor('#ED2647', 75)}` : `background-color:${lightenHexColor('#A0D6B4', 75)}`]" 
                             :class="[msg.senderId == 'e' ? 'rounded-bl-none' : 'rounded-br-none']"
                             class="p-1.5 rounded-xl">{{ msg.msg }}</div>
-                        <div class="absolute -bottom-4 left-12 text-xs font-normal">
+                        <div :class="[msg.senderId == 'a' ? 'right-12' : 'left-12']"
+                            class="absolute -bottom-4 text-xs font-normal">
                             <span class="text-gray-700 font-semibold">{{ msg.senderId == "a" ? "Me" : "Leila Adams"
                                 }}</span>&nbsp;
                             <span class="text-gray-400"> {{ msg.time }} </span>
