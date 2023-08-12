@@ -99,11 +99,13 @@ function lightenHexColor(hex: string, percent: number): string {  // Increase br
 
 const activeConversationId = ref<string | null>(null);
 
+const isActiveConversation = computed(() => {
+    return activeConversationId.value != null;
+})
+
 function viewConversation(id: string) {
     activeConversationId.value = id;
 }
-
-const isRecipientProfileOpen = ref(false);
 
 const dateISO = new Date(Date.now()).toISOString();
 const messages = ref([
@@ -150,8 +152,9 @@ const messages = ref([
         </div>
     </header>
     <main class="md:flex">
-        <aside :class="{ hidden: true }" class="px-2 w-full md:block md:w-1/3 lg:w-[250px]">
-            <button class="btn btn-black fixed bottom-8 right-8 md:static md:my-4" type="button">
+        <!--#region left sidebar-->
+        <aside :class="{ hidden: isActiveConversation }" class="px-2 w-full md:block md:w-1/3 lg:w-[250px]">
+            <button class="btn btn-black fixed bottom-8 right-2 md:static md:my-4" type="button">
                 <Icon name="streamline:interface-edit-pencil-change-edit-modify-pencil-write-writing" />
                 New Message
             </button>
@@ -182,11 +185,13 @@ const messages = ref([
             </ul>
             <!--#endregion private conversations-->
         </aside>
-        <section class="px-2 w-full md:w-2/3" v-if="!activeConversationId">
+        <!--#endregion-->
+
+        <!--#region where messages live-->
+        <section class="px-2 w-full md:w-2/3" v-if="isActiveConversation">
             <header class="flex justify-between items-center py-1">
                 <div class="flex items-center gap-2">
-                    <button class="btn pl-0 shadow-none"
-                        type="button">
+                    <button class="btn pl-0 shadow-none" type="button">
                         <Icon name="ep:back" />
                     </button>
                     <img class="h-8 w-8" src="" alt="" v-if="false" />
@@ -246,6 +251,15 @@ const messages = ref([
             </div>
             <!--#endregion-->
         </section>
+        <section class="hidden md:block md:w-2/3 md:flex md:items-center md:justify-center md:border-2 md:border-gray-200 md:rounded-md md:h-[75vh]" v-else>
+            <div class="text-center">
+                <h2 class="heading-2">Its empty here</h2>
+                <p>Open a conversation or start one</p>
+            </div>
+        </section>
+        <!--#endregion-->
+
+        <!--#region right sidebar-->
         <section :class="{ hidden: true }" class="w-full md:pt-2 md:border-gray-200 lg:block lg:w-1/6">
             <div class="p-2 gap-y-2 flex flex-col">
                 <h2 class="heading-2 text-center text-gray-400">Recent Documents</h2>
@@ -259,5 +273,6 @@ const messages = ref([
                 </ul>
             </div>
         </section>
+        <!--#endregion-->
     </main>
 </template>
