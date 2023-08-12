@@ -183,11 +183,22 @@ const messages = ref([
             <!--#endregion private conversations-->
         </aside>
         <section class="px-2 w-full md:w-2/3" v-if="!activeConversationId">
-            <header class="flex justify-between items-center">
-                <h2 class="heading-2">{{ "Leila Adams" }}</h2>
+            <header class="flex justify-between items-center py-1">
+                <div class="flex items-center gap-2">
+                    <button class="btn pl-0 shadow-none"
+                        type="button">
+                        <Icon name="ep:back" />
+                    </button>
+                    <img class="h-8 w-8" src="" alt="" v-if="false" />
+                    <div :style="`border:1.5px solid ${'#ED2647'}`"
+                        class="h-8 w-8 rounded-full flex items-center justify-center bg-gray-200" v-else>
+                        {{ getInitials("Leila Adams") }}
+                    </div>
+                    <h2 class="heading-2">{{ "Leila Adams" }}</h2>
+                </div>
                 <button class="btn shadow-none text-gray-700 lg:hidden">
                     Docs
-                    <Icon name="entypo:documents"/>
+                    <Icon name="entypo:documents" />
                 </button>
             </header>
             <!--#region texts box-->
@@ -196,24 +207,25 @@ const messages = ref([
                     <li v-for="msg in  messages[0].content " :class="{ 'justify-end': msg.senderId == 'a' }"
                         class="relative flex items-end gap-x-4 py-1 my-4 font-semibold">
                         <img :class="{ 'order-last': msg.senderId == 'a' }" class="h-8 w-8" src="" alt="" v-if="false" />
-                        <div :style="[msg.senderId == 'e' ? `border:1.5px solid #ED2647` : `border: 1.5px solid #A0D6B4`]" :class="{ 'order-last': msg.senderId == 'a' }"
+                        <div :style="[msg.senderId == 'e' ? `border:1.5px solid #ED2647` : `border: 1.5px solid #A0D6B4`]"
+                            :class="{ 'order-last': msg.senderId == 'a' }"
                             class="h-8 w-8 rounded-full flex items-center justify-center text-sm" v-else>
                             {{ getInitials("Leila Adams") }}
                         </div>
-                        <div :style="[msg.senderId == 'e' ? `background-color:${lightenHexColor('#ED2647', 75)}` : `background-color:${lightenHexColor('#A0D6B4', 75)}`]" 
-                            :class="[msg.senderId == 'e' ? 'rounded-bl-none' : 'rounded-br-none']"
-                            class="p-1.5 rounded-xl">{{ msg.msg }}</div>
+                        <div :style="[msg.senderId == 'e' ? `background-color:${lightenHexColor('#ED2647', 75)}` : `background-color:${lightenHexColor('#A0D6B4', 75)}`]"
+                            :class="[msg.senderId == 'e' ? 'rounded-bl-none' : 'rounded-br-none']" class="p-1.5 rounded-xl">
+                            {{ msg.msg }}</div>
                         <div :class="[msg.senderId == 'a' ? 'right-12' : 'left-12']"
                             class="absolute -bottom-4 text-xs font-normal">
                             <span class="text-gray-700 font-semibold">{{ msg.senderId == "a" ? "Me" : "Leila Adams"
-                                }}</span>&nbsp;
+                            }}</span>&nbsp;
                             <span class="text-gray-400"> {{ msg.time }} </span>
                         </div>
                     </li>
                 </ul>
                 <!--#region typing indicator-->
                 <div class="flex items-center gap-4 mt-6 mb-2">
-                    <img class="h-8 w-8" src="" alt="" v-if=" false" />
+                    <img class="h-8 w-8" src="" alt="" v-if="false" />
                     <div :style="`border:1.5px solid #FF0000`"
                         class="h-8 w-8 rounded-full flex items-center justify-center text-sm" v-else>
                         {{ getInitials("Leila Adams") }}
@@ -234,8 +246,7 @@ const messages = ref([
             </div>
             <!--#endregion-->
         </section>
-        <section :class="{ hidden: true }"
-            class="w-full md:pt-2 md:border-gray-200 lg:block lg:w-1/6"> 
+        <section :class="{ hidden: true }" class="w-full md:pt-2 md:border-gray-200 lg:block lg:w-1/6">
             <div class="p-2 gap-y-2 flex flex-col">
                 <h2 class="heading-2 text-center text-gray-400">Recent Documents</h2>
                 <ul class="p-2">
