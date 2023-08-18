@@ -142,7 +142,7 @@ const messages = ref([
 
 </script>
 <template>
-    <header class="flex justify-between items-center py-4 px-2">
+    <header class="flex justify-between items-center py-4 px-2 2xl:container 2xl:mx-auto">
         <img src="~/assets/logo-no-background.svg" height="60" width="160" alt="company logo" />
         <div class="md:flex md:gap-4 md:items-center">
             <img src="~/assets/avatar.svg" height="35" width="35" alt="user avatar" />
@@ -151,9 +151,9 @@ const messages = ref([
             </p>
         </div>
     </header>
-    <main class="md:flex">
+    <main class="px-2 md:flex 2xl:container 2xl:mx-auto">
         <!--#region left sidebar-->
-        <aside :class="{ hidden: isActiveConversation }" class="px-2 w-full md:block md:w-1/3 lg:w-[250px]">
+        <aside :class="{ hidden: isActiveConversation }" class="pr-2 w-full md:block md:w-1/3 lg:w-[350px]">
             <button class="btn btn-black fixed bottom-8 right-2 md:static md:my-4" type="button">
                 <Icon name="streamline:interface-edit-pencil-change-edit-modify-pencil-write-writing" />
                 New Message
@@ -188,7 +188,7 @@ const messages = ref([
         <!--#endregion-->
 
         <!--#region where messages live-->
-        <section class="px-2 w-full md:w-2/3" v-if="isActiveConversation">
+        <section class="w-full" v-if="isActiveConversation">
             <header class="flex justify-between items-center py-1">
                 <div class="flex items-center gap-2">
                     <button class="btn pl-0 shadow-none" type="button">
@@ -251,26 +251,10 @@ const messages = ref([
             </div>
             <!--#endregion-->
         </section>
-        <section class="hidden md:block md:w-2/3 md:flex md:items-center md:justify-center md:border-2 md:border-gray-200 md:rounded-md md:h-[75vh]" v-else>
+        <section class="hidden md:block md:w-full md:flex md:items-center md:justify-center md:border-2 md:border-gray-200 md:rounded-md md:h-[75vh]" v-else>
             <div class="text-center">
                 <h2 class="heading-2">Its empty here</h2>
                 <p>Open a conversation or start one</p>
-            </div>
-        </section>
-        <!--#endregion-->
-
-        <!--#region right sidebar-->
-        <section :class="{ hidden: true }" class="w-full md:pt-2 md:border-gray-200 lg:block lg:w-1/6">
-            <div class="p-2 gap-y-2 flex flex-col">
-                <h2 class="heading-2 text-center text-gray-400">Recent Documents</h2>
-                <ul class="p-2">
-                    <li class="bg-gray-100 px-2 py-1 my-1" v-for=" i  in  4">
-                        <div>
-                            document {{ i }}
-                        </div>
-                        <div class="text-gray-400 text-xs">Sent&nbsp;{{ "13:08" }}</div>
-                    </li>
-                </ul>
             </div>
         </section>
         <!--#endregion-->
