@@ -1,9 +1,10 @@
 <script setup lang="ts">
+const { useHexRandomColor, useInitials, useLightenHexColor } = useUtils();
 const me = ref({
     id: "a",
     avatar: null,
     name: "Derrick Mbarani",
-    color: getHexRandomColor(),
+    color: useHexRandomColor(),
     role: "normal",
 });
 const users = ref([
@@ -11,7 +12,7 @@ const users = ref([
         id: "b",
         avatar: null,
         name: "Ernest Hanson",
-        color: getHexRandomColor(),
+        color: useHexRandomColor(),
         conversationId: "1",
         role: "normal",
     },
@@ -19,7 +20,7 @@ const users = ref([
         id: "c",
         avatar: null,
         name: "Brian Abwenje",
-        color: getHexRandomColor(),
+        color: useHexRandomColor(),
         conversationId: "2",
         role: "normal",
     },
@@ -27,7 +28,7 @@ const users = ref([
         id: "d",
         avatar: null,
         name: "Josephine Nabwire",
-        color: getHexRandomColor(),
+        color: useHexRandomColor(),
         conversationId: "3",
         role: "normal",
     },
@@ -35,7 +36,7 @@ const users = ref([
         id: "e",
         avatar: null,
         name: "Leila Adams",
-        color: getHexRandomColor(),
+        color: useHexRandomColor(),
         conversationId: "4",
         role: "normal",
     },
@@ -43,7 +44,7 @@ const users = ref([
         id: "f",
         avatar: null,
         name: "Nikita Broadways LongsDale Kim",
-        color: getHexRandomColor(),
+        color: useHexRandomColor(),
         conversationId: "5",
         role: "normal",
     },
@@ -53,7 +54,7 @@ const groups = ref([
         id: "f",
         avatar: null,
         name: "TensorFlow",
-        color: getHexRandomColor(),
+        color: useHexRandomColor(),
         conversationId: "5",
         role: "group",
     },
@@ -61,49 +62,11 @@ const groups = ref([
         id: "g",
         avatar: null,
         name: "Data Cleaning",
-        color: getHexRandomColor(),
+        color: useHexRandomColor(),
         conversationId: "6",
         role: "group",
     },
 ]);
-
-function getInitials(fullName: string): string {
-    let initials = "";
-    fullName
-        .split(" ")
-        .forEach((name) => (initials += name.charAt(0).toUpperCase()));
-    return initials.substring(0, 2);
-}
-
-function getHexRandomColor(): string {
-    const letters = "0123456789ABCDEF";
-    let color = "#";
-    for (let i = 0; i < 6; i++) {
-        color += letters[Math.floor(Math.random() * 16)];
-    }
-    return color;
-}
-
-function lightenHexColor(hex: string, percent: number): string {  // Increase brightness by __%
-    // Remove the leading '#' if present
-    hex = hex.replace('#', '');
-
-    // Convert the hex to RGB
-    const r = parseInt(hex.substring(0, 2), 16);
-    const g = parseInt(hex.substring(2, 4), 16);
-    const b = parseInt(hex.substring(4, 6), 16);
-
-    // Calculate the new RGB values
-    const newR = Math.min(255, r + (255 - r) * (percent / 100));
-    const newG = Math.min(255, g + (255 - g) * (percent / 100));
-    const newB = Math.min(255, b + (255 - b) * (percent / 100));
-
-    // Convert the new RGB values back to hex
-    const newHex = `#${Math.round(newR).toString(16).padStart(2, '0')}${Math.round(newG).toString(16).padStart(2, '0')}${Math.round(newB).toString(16).padStart(2, '0')}`;
-
-    return newHex;
-}
-
 
 const activeConversationId = ref<string | null>(null);
 
@@ -155,7 +118,7 @@ const messages = ref([
         <div class="md:flex md:gap-4 md:items-center">
             <img src="~/assets/avatar.svg" height="35" width="35" alt="user avatar" />
             <p class="text-xs text-center md:text-xl md:order-first md:font-semibold">
-                {{ getInitials(me.name) }}
+                {{ useInitials(me.name) }}
             </p>
         </div>
     </header>
@@ -168,7 +131,7 @@ const messages = ref([
             </button>
             <!--#region group conversations-->
             <ul class="divide-y">
-                <li v-for="group in groups" class="flex items-center gap-x-4 py-1.5 font-bold"
+                <li v-for="group in groups" class="flex items-center gap-x-4 py-1.5 font-bold cursor-pointer hover:bg-gray-100"
                     @click="viewConversation(group.conversationId)">
                     <img class="h-8 w-8" src="~/assets/hash.svg" alt="group avatar" />
                     <p class="truncate">{{ group.name }}</p>
@@ -181,12 +144,12 @@ const messages = ref([
             </div>
             <!--#region private conversations-->
             <ul class="divide-y">
-                <li v-for="user in users" class="flex items-center gap-x-4 py-1.5 font-bold"
+                <li v-for="user in users" class="flex items-center gap-x-4 py-1.5 font-bold cursor-pointer hover:bg-gray-100"
                     @click="viewConversation(user.conversationId)">
                     <img class="h-10 w-10" :src="user.avatar" alt="" v-if="user.avatar" />
                     <p :style="`border:1.5px solid ${user.color}`"
                         class="h-10 w-10 rounded-full flex items-center justify-center bg-gray-200" v-else>
-                        {{ getInitials(user.name) }}
+                        {{ useInitials(user.name) }}
                     </p>
                     <p class="truncate">{{ user.name }}</p>
                 </li>
@@ -205,7 +168,7 @@ const messages = ref([
                     <img class="h-8 w-8" src="" alt="" v-if="false" />
                     <div :style="`border:1.5px solid ${'#ED2647'}`"
                         class="h-8 w-8 rounded-full flex items-center justify-center bg-gray-200" v-else>
-                        {{ getInitials("Leila Adams") }}
+                        {{ useInitials("Leila Adams") }}
                     </div>
                     <h2 class="heading-2">{{ "Leila Adams" }}</h2>
                 </div>
@@ -223,9 +186,9 @@ const messages = ref([
                         <div :style="[msg.senderId == 'e' ? `border:1.5px solid #ED2647` : `border: 1.5px solid #A0D6B4`]"
                             :class="{ 'order-last': msg.senderId == 'a' }"
                             class="h-8 w-8 rounded-full flex items-center justify-center text-sm" v-else>
-                            {{ getInitials("Leila Adams") }}
+                            {{ useInitials("Leila Adams") }}
                         </div>
-                        <div :style="[msg.senderId == 'e' ? `background-color:${lightenHexColor('#ED2647', 75)}` : `background-color:${lightenHexColor('#A0D6B4', 75)}`]"
+                        <div :style="[msg.senderId == 'e' ? `background-color:${useLightenHexColor('#ED2647', 75)}` : `background-color:${useLightenHexColor('#A0D6B4', 75)}`]"
                             :class="[msg.senderId == 'e' ? 'rounded-bl-none' : 'rounded-br-none']" class="p-1.5 rounded-xl">
                             {{ msg.msg }}</div>
                         <div :class="[msg.senderId == 'a' ? 'right-12' : 'left-12']"
@@ -241,7 +204,7 @@ const messages = ref([
                     <img class="h-8 w-8" src="" alt="" v-if="false" />
                     <div :style="`border:1.5px solid #FF0000`"
                         class="h-8 w-8 rounded-full flex items-center justify-center text-sm" v-else>
-                        {{ getInitials("Leila Adams") }}
+                        {{ useInitials("Leila Adams") }}
                     </div>
                     <AppTypingEffect />
                 </div>
