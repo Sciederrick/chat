@@ -39,6 +39,14 @@ const users = ref([
         conversationId: "4",
         role: "normal",
     },
+    {
+        id: "f",
+        avatar: null,
+        name: "Nikita Broadways LongsDale Kim",
+        color: getHexRandomColor(),
+        conversationId: "5",
+        role: "normal",
+    },
 ]);
 const groups = ref([
     {
@@ -64,7 +72,7 @@ function getInitials(fullName: string): string {
     fullName
         .split(" ")
         .forEach((name) => (initials += name.charAt(0).toUpperCase()));
-    return initials;
+    return initials.substring(0, 2);
 }
 
 function getHexRandomColor(): string {
@@ -163,7 +171,7 @@ const messages = ref([
                 <li v-for="group in groups" class="flex items-center gap-x-4 py-1.5 font-bold"
                     @click="viewConversation(group.conversationId)">
                     <img class="h-8 w-8" src="~/assets/hash.svg" alt="group avatar" />
-                    <div>{{ group.name }}</div>
+                    <p class="truncate">{{ group.name }}</p>
                 </li>
             </ul>
             <!--#endregion-->
@@ -176,11 +184,11 @@ const messages = ref([
                 <li v-for="user in users" class="flex items-center gap-x-4 py-1.5 font-bold"
                     @click="viewConversation(user.conversationId)">
                     <img class="h-10 w-10" :src="user.avatar" alt="" v-if="user.avatar" />
-                    <div :style="`border:1.5px solid ${user.color}`"
+                    <p :style="`border:1.5px solid ${user.color}`"
                         class="h-10 w-10 rounded-full flex items-center justify-center bg-gray-200" v-else>
                         {{ getInitials(user.name) }}
-                    </div>
-                    <div>{{ user.name }}</div>
+                    </p>
+                    <p class="truncate">{{ user.name }}</p>
                 </li>
             </ul>
             <!--#endregion private conversations-->
@@ -251,7 +259,9 @@ const messages = ref([
             </div>
             <!--#endregion-->
         </section>
-        <section class="hidden md:block md:w-full md:flex md:items-center md:justify-center md:border-2 md:border-gray-200 md:rounded-md md:h-[75vh]" v-else>
+        <section
+            class="hidden md:block md:w-full md:flex md:items-center md:justify-center md:border-2 md:border-gray-200 md:rounded-md md:h-[75vh]"
+            v-else>
             <div class="text-center">
                 <h2 class="heading-2">Its empty here</h2>
                 <p>Open a conversation or start one</p>
