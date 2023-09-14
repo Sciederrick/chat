@@ -7,19 +7,12 @@ const bioSchema = new mongoose.Schema({
   links: [String],
 });
 
-const lastMessageSchema = new mongoose.Schema({
-  message: String,
-  conversationId: mongoose.Schema.Types.ObjectId,
-  createdAt: Date
-});
-
 const profileSchema = new mongoose.Schema(
   {
     email: { type: String},
     avatar: { type: String },
     bio: { type: bioSchema, required: true },
     role: { type: String, default: "client" },
-    lastMessage: { type: lastMessageSchema },
     password: { type: String, required: true },
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now },

@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const Profile = require("../../../mongo/models/profile");
+const profileModel = require("../../../mongo/models/profile");
 const {
   validateCreateProfile,
   validateGetProfileById,
@@ -15,7 +15,7 @@ profileController.createProfile = async (req, res) => {
       return res.status(400).json({ message: "invalid inputs", status: 400 });
 
     if (req.body.email) {
-      const existingUser = await Profile.findOne({
+      const existingUser = await profileModel.findOne({
         email: req.body.email.trim(),
       });
       if (existingUser != null)
@@ -50,7 +50,7 @@ profileController.createProfile = async (req, res) => {
       payload.role = req.body.role.trim();
     }
 
-    const newProfile = await Profile.create(payload);
+    const newProfile = await profileModel.create(payload);
     delete newProfile["password"];
 
     // Will be required on auth full integration :)
@@ -77,7 +77,7 @@ profileController.getProfileById = async (req, res) => {
         .status(400)
         .json({ message: "invalid profile id", status: 400 });
 
-    const foundProfile = await Profile.find(
+    const foundProfile = await profileModel.find(
       {
         _id: req.params.profileId.trim(),
       },
@@ -109,7 +109,7 @@ profileController.getMultipleProfilesByIds = async (req, res) => {
         .status(400)
         .json({ message: "invalid profile id", status: 400 });
 
-    const foundProfiles = await Profile.find(
+    const foundProfiles = await profileModel.find(
       {
         _id: {
           $in: validProfileIds,
@@ -145,7 +145,7 @@ profileController.getUncontactedProfiles = async (req, res) => {
         .status(400)
         .json({ message: "invalid profile id", status: 400 });
 
-    const allProfiles = await Profile.find({}, "-password");
+    const allProfiles = await profileModel.find({}, "-password");
     if (!allProfiles)
       return res.status(404).json({
         message: `Profiles were not found`,

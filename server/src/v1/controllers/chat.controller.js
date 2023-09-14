@@ -1,6 +1,6 @@
 const { Types } = require("mongoose");
-const { messageModel } = require("./../../../mongo/models/message");
-const Conversation = require("./../../../mongo/models/conversation");
+const messageModel = require("./../../../mongo/models/message");
+const conversationModel = require("./../../../mongo/models/conversation");
 const {
   validateCreateMessage,
   validateDeleteMessage,
@@ -153,7 +153,7 @@ chatController.updateMessagesByConversationId = async (req, res) => {
         status: 400,
       });
 
-    const foundConversation = await Conversation.findOne({
+    const foundConversation = await conversationModel.findOne({
       _id: validInputs.params.conversationId,
     });
     if (!foundConversation)
@@ -184,7 +184,7 @@ chatController.createConversation = async (req, res) => {
         status: 400,
       });
 
-    const isAlreadyExists = await Conversation.findOne({
+    const isAlreadyExists = await conversationModel.findOne({
       participants: {
         $all: validInputs.participants,
       },
@@ -192,7 +192,7 @@ chatController.createConversation = async (req, res) => {
 
     if (isAlreadyExists) return res.status(409).json(isAlreadyExists);
 
-    const newConversation = await Conversation.create(validInputs);
+    const newConversation = await conversationModel.create(validInputs);
 
     return res.status(201).json(newConversation);
   } catch (err) {
@@ -208,7 +208,7 @@ chatController.deleteConversation = async (req, res) => {
     if (!validateDeleteConversation(req.body))
       return res.status(400).json({ message: "invalid input", status: 400 });
 
-    const isConvDeleted = await Conversation.deleteOne({
+    const isConvDeleted = await conversationModel.deleteOne({
       _id: req.body.conversationId,
     });
     if (isConvDeleted.n === 0)
