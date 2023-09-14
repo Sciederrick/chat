@@ -1,0 +1,126 @@
+# 1. Generate Api key for authenticated user (Example request with requests.rest Vscode extension)
+# GET http://localhost:3080/api/v1/key
+# Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiam9obmRvZUBleGFtcGxlLmNvbSIsImlkIjoiNjNlYTM4N2IyN2NhMDU0ZjhjMmViNmI2Iiwicm9sZSI6ImNsaWVudCIsImlhdCI6MTY3OTMyMTYzM30.O-hYhq3tCXNUP79bJ43uHqXhozCtlsePu55zkfb1SUs
+
+# 2. codepads endpoint
+
+# POST http://localhost:3080/api/v1/codepads
+# content-type: application/json
+
+# {
+#     "userId": "abcd7856werYT",
+#     "filename": "example-3",
+#     "code": "d=5"
+# }
+
+# 3. codepad by id
+# GET http://localhost:3080/api/v1/codepads/649c5be0caebb63f8816fef2
+
+# 4. codepads from a particular user
+# GET http://localhost:3080/api/v1/codepads/64a7ea71cc7efe460fc69823/user
+
+# 5. update codepad by id
+# PUT http://localhost:3080/api/v1/codepads/649c4f1613296727f870ba5c
+# Content-Type: application/json
+
+# {
+#     "userId": "abcd7856werYT",
+#     "filename": "variables lesson",
+#     "code": "a=7"
+# }
+
+#6. delete code resource by id
+# DELETE http://localhost:3080/api/v1/codepads/649c4f1613296727f870ba5c
+
+#7. delete code resources for a particular user
+# DELETE http://localhost:3080/api/v1/codepads/abcd7856werYT/user
+
+#8. compile code
+# POST http://localhost:3080/api/v1/codepads/compile
+# content-type: application/json
+
+# {
+#     "code": "def hello_world():\n\tprint('Hello, World!')\n\nhello_world()"
+# }
+
+#9. Get chats by conversation id
+# GET http://localhost:3080/api/v1/chats/64be98f5d4a34c3c98fdbbbf
+
+#10. Register
+# POST http://localhost:3080/api/v1/profile
+# Content-Type: application/json
+
+
+# {
+#     "role":"client",
+#     "email":"joe@gmail.com",
+#     "avatar":"/img/contact-avatar2.png",
+#     "bio": {
+#         "links":[],
+#         "fullName": "Joe Ray",
+#         "title": "NLP Expert",
+#         "about": "I am an NLP expert. Consectetur ea explicabo consequuntur possimus molestias."
+#     },
+#     "password": "12345678"
+# }
+
+#11. Get conversation ids by user id
+# GET http://localhost:3080/api/v1/chats/conversations/64b587202d0ddf2a54d0d1ea?private=false
+
+#12. Get Multiple profiles by ids
+# GET http://localhost:3080/api/v1/profile?profileIds=64b586d52d0ddf2a54d0d1e6,64b587202d0ddf2a54d0d1ea,
+
+#13. Create conversation
+# POST http://localhost:3080/api/v1/chats/conversations
+# Content-Type: application/json
+
+# {
+#     "private": false,
+#     "participants": ["64c531b02559c73014a2a84d", "64b5886c2d0ddf2a54d0d1fc", "64b587202d0ddf2a54d0d1ea"]
+# }
+
+#14. Send message
+# POST http://localhost:3080/api/v1/chats
+# Content-Type: application/json
+
+# {
+#     "conversationId": "64be98f5d4a34c3c98fdbbbf",
+#     "senderId": "64b587202d0ddf2a54d0d1ea",
+#     "message": "Morning",
+#     "timestamp": "1690353495244"
+# }
+
+#15. Create profile
+# POST http://localhost:3080/api/v1/profile
+# Content-Type: application/json
+
+# {
+#     "role": "group",
+#     "email": "tensorflow@example.group",
+#     "avatar": "/img/tensorflow.png",
+#     "bio": {
+#         "fullName": "TensorFlow",
+#         "title": "ML with TensorFlow cohort",
+#         "about": "Get market ready for DataScience roles",
+#         "links": []
+#     },
+#     "password": "12345678"
+# }
+
+#16. Update Message Seen Status By Conversation Id
+# PUT  http://localhost:3080/api/v1/chats/64cb67602e1dc5afc2e76d75/seen
+
+#17. Update Message By Id
+PUT  http://localhost:3080/api/v1/chats/64d64569e1d5551370bee40e
+Content-Type: application/json
+
+{
+    "message": "Am I connected to the server?"
+}
+
+# @TODO: Investigate why wrong message id leads to a 500 error
+
+
+
+
+
