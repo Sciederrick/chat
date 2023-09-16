@@ -1,0 +1,2 @@
+- [ ] Load group profiles on the DB
+- [ ] Load group profiles and user profiles on the UI (from DB)
