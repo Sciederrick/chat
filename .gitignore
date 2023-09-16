@@ -22,5 +22,3 @@ logs
 .env.*
 !.env.example
 
-# Data files
-./data/user_profiles.json

@@ -1,12 +1,21 @@
 <script setup lang="ts">
 const { useHexRandomColor, useInitials, useLightenHexColor } = useUtils();
-const me = ref({
-    id: "a",
-    avatar: null,
-    name: "Derrick Mbarani",
-    color: useHexRandomColor(),
-    role: "normal",
-});
+
+type Me = {
+    email: string,
+    avatar: string,
+    isMale: boolean,
+    bio: {
+        fullName: string,
+        title: string,
+        about: String,
+        links?: [string],
+    },
+    role: string,
+    createdAt?: string,
+    updatedAt?: string,
+};
+const me = ref<Me>();
 const users = ref([
     {
         id: "b",
@@ -111,14 +120,32 @@ const messages = ref([
     },
 ]);
 
+async function loadUserFromLocalStorage() {
+    const userFromLocalStorage = localStorage.getItem("chatly-user") as string;
+    const user = JSON.parse(userFromLocalStorage);
+    user.color = useHexRandomColor();
+    me.value = user;
+};
+
+const templateImages = ref(useUtils().useAssetImages());
+
+const userAvatar = computed<string>(() => {
+    const key = me.value!.isMale ? 'male-avatar' : 'female-avatar';
+    return templateImages.value?.[key];
+});
+
+onBeforeMount(() => {
+    loadUserFromLocalStorage();
+});
+
 </script>
 <template>
     <header class="flex justify-between items-center py-4 px-2 2xl:container 2xl:mx-auto">
         <img src="~/assets/logo-no-background.svg" height="60" width="160" alt="company logo" />
         <div class="md:flex md:gap-4 md:items-center">
-            <img src="~/assets/avatar.svg" height="35" width="35" alt="user avatar" />
+            <img :src="userAvatar" height="35" width="35" alt="user avatar" :title="me!.bio.fullName"/>
             <p class="text-xs text-center md:text-xl md:order-first md:font-semibold">
-                {{ useInitials(me.name) }}
+                {{ useInitials(me!.bio.fullName) }}
             </p>
         </div>
     </header>

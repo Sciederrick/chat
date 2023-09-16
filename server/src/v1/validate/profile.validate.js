@@ -20,6 +20,11 @@ validate.validateGetProfileById = (params) => {
   return typeof profileId == "string" && profileId.trim() != "";
 };
 
+validate.validateGetRandomProfile = (params) => {
+  const gender = params.gender;
+  return typeof gender == "string" && (gender.trim() == "M" || gender.trim() == "F" || gender.trim() == "A") 
+};
+
 validate.validateGetMultipleProfilesByIds = (queryArray) => {
   if (typeof queryArray != 'object' || queryArray.length == 0) return null;
 

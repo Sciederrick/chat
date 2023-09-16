@@ -4,6 +4,7 @@ const {
   validateCreateProfile,
   validateGetProfileById,
   validateGetMultipleProfilesByIds,
+  validateGetRandomProfile,
 } = require("../validate/profile.validate");
 const helpers = require("./../util/helper.util");
 
@@ -90,6 +91,44 @@ profileController.getProfileById = async (req, res) => {
       });
 
     return res.status(200).json(foundProfile);
+  } catch (err) {
+    console.error(err);
+    return res
+      .status(500)
+      .json({ message: "Something went wrong", status: 500 });
+  }
+};
+
+profileController.getRandomProfile = async (req, res) => {
+  try {
+    if (!validateGetRandomProfile(req.params))
+      return res
+        .status(400)
+        .json({ message: "invalid params arg", status: 400 });
+
+    let condition;
+    const gender = req.params.gender.trim();
+
+    if (gender != undefined && gender == "M") {
+      condition = { isMale: true };
+    } else if (gender != undefined && gender == "F") {
+      condition = { isMale: false };
+    } else {
+      condition = {};
+    }
+
+    const foundProfiles = await profileModel.find(condition, "-password");
+    const numProfiles = foundProfiles.length;
+
+    if (!foundProfiles || numProfiles == 0)
+      return res.status(404).json({
+        message: `Profile not found`,
+        status: 404,
+      });
+
+    const randomIndex = Math.floor(Math.random() * numProfiles);
+
+    return res.status(200).json(foundProfiles[randomIndex]);
   } catch (err) {
     console.error(err);
     return res

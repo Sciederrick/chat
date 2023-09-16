@@ -111,16 +111,18 @@
 # PUT  http://localhost:3080/api/v1/chats/64cb67602e1dc5afc2e76d75/seen
 
 #17. Update Message By Id
-PUT  http://localhost:3080/api/v1/chats/64d64569e1d5551370bee40e
-Content-Type: application/json
+# PUT  http://localhost:3080/api/v1/chats/64d64569e1d5551370bee40e
+# Content-Type: application/json
 
-{
-    "message": "Am I connected to the server?"
-}
+# {
+#     "message": "Am I connected to the server?"
+# }
 
 # @TODO: Investigate why wrong message id leads to a 500 error
 
-
+#18. Get Random Profile
+GET http://localhost:3080/api/v1/profiles/M/random
+Content-Type: application/json
 
 
 

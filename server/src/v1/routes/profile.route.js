@@ -5,12 +5,13 @@ const {
   getProfileById,
   getMultipleProfilesByIds,
   getUncontactedProfiles,
+  getRandomProfile,
 } = require("../controllers/profile.controller");
 
 router
   .route("/")
   /**
-   * @api {post} /profile/ Create profile
+   * @api {post} /profiles/ Create profile
    * @apiName Createprofile
    * @apiGroup profile
    *
@@ -58,7 +59,7 @@ router
 router
   .route("/:profileId")
   /**
-   * @api {get} /profile/:profileId Get Profile By Id
+   * @api {get} /profiles/:profileId Get Profile By Id
    * @apiName GetProfileById
    * @apiGroup Profile
    *
@@ -98,11 +99,55 @@ router
    *
    */
   .get(getProfileById);
+  
+  router
+  .route("/:gender/random")
+  /**
+   * @api {get} /profiles/:gender/random Get Random Profile
+   * @apiName GetRandomProfile
+   * @apiGroup Profile
+   *
+   * @apiParam {String} gender    Gender "M" or "F" or "A"
+   *
+   * @apiSuccess {String} email      Mandatory Email
+   * @apiSuccess {String} avatar     Avatar location
+   * @apiSuccess {Object} bio        Mandatory Biography
+   * @apiSuccess {String} bio.fullName  Mandatory Full name
+   * @apiSuccess {String} bio.title     Title of the user
+   * @apiSuccess {String} bio.about     About the user
+   * @apiSuccess {String[]} bio.links   Personal links of the user
+   * @apiSuccess {String} role          Role of user
+   * @apiSuccess {String} timestamp    ISO 8601 DateTime string
+   *
+   * @apiSuccessExample Success-Response
+   * HTTP/1/1 201 OK
+   * 
+   *  {
+   *    "role": "client",
+   *    "_id": "64a7e734cc7efe460fc69805",
+   *    "email": "eleanor@gmail.com",
+   *    "isMale": false,
+   *    "avatar": "/img/contact-avatar3.png",
+   *    "bio": {
+   *      "links": [],
+   *      "_id": "64a7e734cc7efe460fc69806",
+   *      "fullName": "Eleanor Lindsey",
+   *      "title": "QA Practitioner",
+   *      "about": "I am a QA Practitioner. Consectetur ea explicabo consequuntur possimus molestias."
+   *    },
+   *    "createdAt": "2023-07-07T10:21:40.476Z",
+   *    "updatedAt": "2023-07-07T10:21:40.476Z",
+   *    "__v": 0
+   *  }
+   * 
+   *
+   */
+  .get(getRandomProfile);
 
 router
   .route("/")
   /**
-   * @api {get} /profile Get Multiple Profiles By Ids
+   * @api {get} /profiles Get Multiple Profiles By Ids
    * @apiName GetMultipleProfilesByIds
    * @apiGroup Profile
    *
@@ -164,7 +209,7 @@ router
 router
   .route("/uncontacted")
   /**
-   * @api {post} /profile/uncontacted Get Uncontacted Profiles
+   * @api {post} /profiles/uncontacted Get Uncontacted Profiles
    * @apiName GetUncontactedProfiles
    * @apiGroup Profile
    *

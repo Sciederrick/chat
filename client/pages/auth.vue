@@ -2,7 +2,7 @@
 function goToChat() {
     navigateTo("/");
 }
-const userProfile = ref<Object | null>(null);
+const userProfile = ref<any>(null);
 const gender = ref<String | null>(null);
 
 const isAccessLocalStorage = ref<Boolean>(false);
@@ -10,22 +10,31 @@ const isAccessLocalStorage = ref<Boolean>(false);
 const isAssignProfileBtnDisabled = computed(() => {
     return isAccessLocalStorage.value == false || gender.value == null;
 });
-function assignProfile() {
-    // @TODO: fetch data from DB and set `userProfile`
-    userProfile.value = {
-        email: "johndoe@example.com",
-        isMale: gender.value == "M",
-        avatar: null,
-        bio: {
-            fullName: "JohnDoe",
-            title: "ML Engineer",
-            about: "Passionate ML Engineer finding AI creative solutions for climate change.",
-            links: null
-        },
-        role: "client",
-        password: "12345678"
-    };
+
+const isProfileFetchError = ref<Boolean>(false);
+async function assignProfile() {
+    const { data, status } = await useFetch(`http://localhost:3080/api/v1/profiles/${gender.value ?? "A"}/random`);
+
+    if (status.value != "success") {
+        isProfileFetchError.value = true;
+    } else {
+        userProfile.value = data.value;
+        localStorage.setItem("chatly-user", JSON.stringify(data.value));
+    }
 };
+
+const templateImages = ref(useUtils().useAssetImages());
+
+const userAvatar: any = computed(() => {
+    const key = userProfile.isMale ? 'male-avatar' : 'female-avatar';
+    return templateImages.value?.[key];
+});
+
+onBeforeMount(() => {
+    const existingProfile = localStorage.getItem("chatly-user");
+    if (existingProfile != undefined || existingProfile != null) goToChat()
+});
+
 </script>
 
 <template>
@@ -47,17 +56,18 @@ function assignProfile() {
                     </form>
                     <br />
                     <!-- <p class="w-full text-right pr-4 text-xs md:pr-0">Steps 1/1</p> -->
-                    <button type="button" :class="[isAssignProfileBtnDisabled ? 'cursor-not-allowed text-red-200' : 'cursor-pointer']" class="float-right text-[--deep-red] p-2 hover:text-[--red]"
-                        @click="assignProfile" :disabled="isAssignProfileBtnDisabled">
+                    <button type="button"
+                        :class="[isAssignProfileBtnDisabled ? 'cursor-not-allowed text-red-200' : 'cursor-pointer']"
+                        class="float-right text-[--deep-red] p-2 hover:text-[--red]" @click="assignProfile"
+                        :disabled="isAssignProfileBtnDisabled">
                         submit&nbsp;
                         <Icon name="ic:round-navigate-next" />
                     </button>
                 </div>
                 <div v-else class="max-w-sm">
-                    <img src="~/assets/male-avatar.svg" width="50" height="50" alt="">
-                    <h2 class="heading-2 py-1">John Doe</h2>
-                    <div class="italic py-1">Software developer with an interest in Data Science. Transforming business
-                        decisions with data.</div>
+                    <img :src="userAvatar" width="50" height="50" alt="">
+                    <h2 class="heading-2 py-1">{{ userProfile.bio.fullName }}</h2>
+                    <div class="italic py-1">{{ userProfile.bio.about }}</div>
                 </div>
             </section>
             <section :class="[userProfile == null ? 'md:bg-[--deep-red] order-first' : 'order-2']"
@@ -73,6 +83,11 @@ function assignProfile() {
                         <Icon name="carbon:next-filled" size="40" class="text-[--deep-red]" />
                     </button>
                 </div>
+                <div v-show="isProfileFetchError" class="flex items-center md:flex-col md:justify-center md:items-start">
+                    <Icon name="bx:error-alt" class="md:text-xl" />
+                    <p class="pl-4 md:pt-4 md:pl-0 md:text-sm">Something went wrong.</p>
+                </div>
             </section>
+        </div>
     </div>
-</div></template>
+</template>

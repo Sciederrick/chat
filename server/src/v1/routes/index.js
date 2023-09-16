@@ -15,7 +15,7 @@ router.get("/", (_, res) => {
 
 router.use("/auth", authRouter);
 router.use("/chats", chatRouter);
-router.use("/profile", profileRouter);
+router.use("/profiles", profileRouter);
 
 
 module.exports = router;

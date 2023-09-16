@@ -1,3 +1,5 @@
+import { filename } from "pathe/utils";
+
 export const useUtils = () => {
   const useInitials = function (fullName: string): string {
     let initials = "";
@@ -41,9 +43,30 @@ export const useUtils = () => {
     return newHex;
   };
 
+  /**
+   * Work around for dynamic images with Vite because require() doesn't work
+   */
+  const useAssetImages = function () {
+    type TemplateImages = {
+      [key: string]: string;
+    };
+    let templateImages: TemplateImages;
+    const glob = import.meta.glob("~/assets/*.svg", { eager: true });
+    const images = Object.fromEntries(
+      Object.entries(glob).map(([key, value]: [string, any]) => [
+        filename(key),
+        value.default,
+      ])
+    );
+    templateImages = images as TemplateImages;
+
+    return templateImages;
+  };
+
   return {
     useInitials,
     useHexRandomColor,
     useLightenHexColor,
+    useAssetImages
   };
 };
