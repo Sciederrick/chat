@@ -1,0 +1,327 @@
+[
+    {
+        "email": "alicedavis@example.com",
+        "isMale": false,
+        "avatar": null,
+        "bio": {
+            "fullName": "Alice Davis",
+            "title": "ML Engineer",
+            "about": "Passionate Software Engineer finding creative solutions.",
+            "links": null
+        },
+        "role": "client",
+        "password": "12345678"
+    },
+    {
+        "email": "alicehall@example.com",
+        "isMale": false,
+        "avatar": null,
+        "bio": {
+            "fullName": "Alice Hall",
+            "title": "ML Engineer",
+            "about": "Passionate Data Scientist finding creative solutions.",
+            "links": null
+        },
+        "role": "client",
+        "password": "12345678"
+    },
+    {
+        "email": "emilylee@example.com",
+        "isMale": false,
+        "avatar": null,
+        "bio": {
+            "fullName": "Emily Lee",
+            "title": "Software Engineer",
+            "about": "Passionate Software Engineer finding creative solutions.",
+            "links": null
+        },
+        "role": "client",
+        "password": "12345678"
+    },
+    {
+        "email": "sophiadavis@example.com",
+        "isMale": false,
+        "avatar": null,
+        "bio": {
+            "fullName": "Sophia Davis",
+            "title": "Software Engineer",
+            "about": "Passionate Data Scientist finding creative solutions.",
+            "links": null
+        },
+        "role": "client",
+        "password": "12345678"
+    },
+    {
+        "email": "davidjohnson@example.com",
+        "isMale": false,
+        "avatar": null,
+        "bio": {
+            "fullName": "David Johnson",
+            "title": "ML Engineer",
+            "about": "Passionate Software Engineer finding creative solutions.",
+            "links": null
+        },
+        "role": "client",
+        "password": "12345678"
+    },
+    {
+        "email": "alicehall@example.com",
+        "isMale": true,
+        "avatar": null,
+        "bio": {
+            "fullName": "Alice Hall",
+            "title": "Data Scientist",
+            "about": "Passionate Software Engineer finding creative solutions.",
+            "links": null
+        },
+        "role": "client",
+        "password": "12345678"
+    },
+    {
+        "email": "danielbrown@example.com",
+        "isMale": false,
+        "avatar": null,
+        "bio": {
+            "fullName": "Daniel Brown",
+            "title": "ML Engineer",
+            "about": "Passionate Software Engineer finding creative solutions.",
+            "links": null
+        },
+        "role": "client",
+        "password": "12345678"
+    },
+    {
+        "email": "davidsmith@example.com",
+        "isMale": true,
+        "avatar": null,
+        "bio": {
+            "fullName": "David Smith",
+            "title": "Software Engineer",
+            "about": "Passionate Software Engineer finding creative solutions.",
+            "links": null
+        },
+        "role": "client",
+        "password": "12345678"
+    },
+    {
+        "email": "michaeljohnson@example.com",
+        "isMale": true,
+        "avatar": null,
+        "bio": {
+            "fullName": "Michael Johnson",
+            "title": "Data Scientist",
+            "about": "Passionate ML Engineer finding creative solutions.",
+            "links": null
+        },
+        "role": "client",
+        "password": "12345678"
+    },
+    {
+        "email": "alicejohnson@example.com",
+        "isMale": false,
+        "avatar": null,
+        "bio": {
+            "fullName": "Alice Johnson",
+            "title": "ML Engineer",
+            "about": "Passionate ML Engineer finding creative solutions.",
+            "links": null
+        },
+        "role": "client",
+        "password": "12345678"
+    },
+    {
+        "email": "williammoore@example.com",
+        "isMale": false,
+        "avatar": null,
+        "bio": {
+            "fullName": "William Moore",
+            "title": "Data Scientist",
+            "about": "Passionate Software Engineer finding creative solutions.",
+            "links": null
+        },
+        "role": "client",
+        "password": "12345678"
+    },
+    {
+        "email": "danielclark@example.com",
+        "isMale": false,
+        "avatar": null,
+        "bio": {
+            "fullName": "Daniel Clark",
+            "title": "Software Engineer",
+            "about": "Passionate ML Engineer finding creative solutions.",
+            "links": null
+        },
+        "role": "client",
+        "password": "12345678"
+    },
+    {
+        "email": "oliviaclark@example.com",
+        "isMale": false,
+        "avatar": null,
+        "bio": {
+            "fullName": "Olivia Clark",
+            "title": "ML Engineer",
+            "about": "Passionate Software Engineer finding creative solutions.",
+            "links": null
+        },
+        "role": "client",
+        "password": "12345678"
+    },
+    {
+        "email": "aliceclark@example.com",
+        "isMale": true,
+        "avatar": null,
+        "bio": {
+            "fullName": "Alice Clark",
+            "title": "ML Engineer",
+            "about": "Passionate Data Scientist finding creative solutions.",
+            "links": null
+        },
+        "role": "client",
+        "password": "12345678"
+    },
+    {
+        "email": "johnbrown@example.com",
+        "isMale": false,
+        "avatar": null,
+        "bio": {
+            "fullName": "John Brown",
+            "title": "ML Engineer",
+            "about": "Passionate ML Engineer finding creative solutions.",
+            "links": null
+        },
+        "role": "client",
+        "password": "12345678"
+    },
+    {
+        "email": "oliviadavis@example.com",
+        "isMale": true,
+        "avatar": null,
+        "bio": {
+            "fullName": "Olivia Davis",
+            "title": "Data Scientist",
+            "about": "Passionate Data Scientist finding creative solutions.",
+            "links": null
+        },
+        "role": "client",
+        "password": "12345678"
+    },
+    {
+        "email": "emmajohnson@example.com",
+        "isMale": true,
+        "avatar": null,
+        "bio": {
+            "fullName": "Emma Johnson",
+            "title": "ML Engineer",
+            "about": "Passionate Software Engineer finding creative solutions.",
+            "links": null
+        },
+        "role": "client",
+        "password": "12345678"
+    },
+    {
+        "email": "sophiawhite@example.com",
+        "isMale": false,
+        "avatar": null,
+        "bio": {
+            "fullName": "Sophia White",
+            "title": "Software Engineer",
+            "about": "Passionate Data Scientist finding creative solutions.",
+            "links": null
+        },
+        "role": "client",
+        "password": "12345678"
+    },
+    {
+        "email": "williamjohnson@example.com",
+        "isMale": false,
+        "avatar": null,
+        "bio": {
+            "fullName": "William Johnson",
+            "title": "Software Engineer",
+            "about": "Passionate Data Scientist finding creative solutions.",
+            "links": null
+        },
+        "role": "client",
+        "password": "12345678"
+    },
+    {
+        "email": "emilyclark@example.com",
+        "isMale": true,
+        "avatar": null,
+        "bio": {
+            "fullName": "Emily Clark",
+            "title": "Data Scientist",
+            "about": "Passionate Data Scientist finding creative solutions.",
+            "links": null
+        },
+        "role": "client",
+        "password": "12345678"
+    },
+    {
+        "email": "oliviaclark@example.com",
+        "isMale": true,
+        "avatar": null,
+        "bio": {
+            "fullName": "Olivia Clark",
+            "title": "Software Engineer",
+            "about": "Passionate Data Scientist finding creative solutions.",
+            "links": null
+        },
+        "role": "client",
+        "password": "12345678"
+    },
+    {
+        "email": "sophiaclark@example.com",
+        "isMale": false,
+        "avatar": null,
+        "bio": {
+            "fullName": "Sophia Clark",
+            "title": "Data Scientist",
+            "about": "Passionate Data Scientist finding creative solutions.",
+            "links": null
+        },
+        "role": "client",
+        "password": "12345678"
+    },
+    {
+        "email": "michaelwhite@example.com",
+        "isMale": false,
+        "avatar": null,
+        "bio": {
+            "fullName": "Michael White",
+            "title": "Software Engineer",
+            "about": "Passionate ML Engineer finding creative solutions.",
+            "links": null
+        },
+        "role": "client",
+        "password": "12345678"
+    },
+    {
+        "email": "alicemoore@example.com",
+        "isMale": true,
+        "avatar": null,
+        "bio": {
+            "fullName": "Alice Moore",
+            "title": "Software Engineer",
+            "about": "Passionate Data Scientist finding creative solutions.",
+            "links": null
+        },
+        "role": "client",
+        "password": "12345678"
+    },
+    {
+        "email": "michaelwhite@example.com",
+        "isMale": true,
+        "avatar": null,
+        "bio": {
+            "fullName": "Michael White",
+            "title": "Software Engineer",
+            "about": "Passionate Data Scientist finding creative solutions.",
+            "links": null
+        },
+        "role": "client",
+        "password": "12345678"
+    }
+]

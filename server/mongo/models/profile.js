@@ -9,8 +9,9 @@ const bioSchema = new mongoose.Schema({
 
 const profileSchema = new mongoose.Schema(
   {
-    email: { type: String},
+    email: { type: String },
     avatar: { type: String },
+    isMale: { type: Boolean, required: true },
     bio: { type: bioSchema, required: true },
     role: { type: String, default: "client" },
     password: { type: String, required: true },
