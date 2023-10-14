@@ -16,6 +16,7 @@ type Me = {
     updatedAt?: string,
 };
 const me = ref<Me>();
+assignDefaultUser();
 const users = ref([
     {
         id: "b",
@@ -120,12 +121,30 @@ const messages = ref([
     },
 ]);
 
-async function loadUserFromLocalStorage() {
+function loadUserFromLocalStorage() {
     const userFromLocalStorage = localStorage.getItem("chatly-user") as string;
-    const user = JSON.parse(userFromLocalStorage);
-    user.color = useHexRandomColor();
-    me.value = user;
+    if (userFromLocalStorage != null) {
+        const user = JSON.parse(userFromLocalStorage);
+        user.color = useHexRandomColor();
+        me.value = user;
+    }
 };
+
+function assignDefaultUser() {
+    me.value = {
+        email: "johndoe@example.com",
+        avatar: "",
+        isMale: true,
+        bio: {
+            fullName: "John Doe",
+            title: "Data Scientist",
+            about: "Product focused developer building data driven applications",
+            links: undefined,
+        },
+        role: "client"
+    }
+
+}
 
 const templateImages = ref(useUtils().useAssetImages());
 
@@ -143,7 +162,7 @@ onBeforeMount(() => {
     <header class="flex justify-between items-center py-4 px-2 2xl:container 2xl:mx-auto">
         <img src="~/assets/logo-no-background.svg" height="60" width="160" alt="company logo" />
         <div class="md:flex md:gap-4 md:items-center">
-            <img :src="userAvatar" height="35" width="35" alt="user avatar" :title="me!.bio.fullName"/>
+            <img :src="userAvatar" height="35" width="35" alt="user avatar" :title="me!.bio.fullName" />
             <p class="text-xs text-center md:text-xl md:order-first md:font-semibold">
                 {{ useInitials(me!.bio.fullName) }}
             </p>
@@ -158,7 +177,8 @@ onBeforeMount(() => {
             </button>
             <!--#region group conversations-->
             <ul class="divide-y">
-                <li v-for="group in groups" class="flex items-center gap-x-4 py-1.5 font-bold cursor-pointer hover:bg-gray-100"
+                <li v-for="group in groups"
+                    class="flex items-center gap-x-4 py-1.5 font-bold cursor-pointer hover:bg-gray-100"
                     @click="viewConversation(group.conversationId)">
                     <img class="h-8 w-8" src="~/assets/hash.svg" alt="group avatar" />
                     <p class="truncate">{{ group.name }}</p>
@@ -171,7 +191,8 @@ onBeforeMount(() => {
             </div>
             <!--#region private conversations-->
             <ul class="divide-y">
-                <li v-for="user in users" class="flex items-center gap-x-4 py-1.5 font-bold cursor-pointer hover:bg-gray-100"
+                <li v-for="user in users"
+                    class="flex items-center gap-x-4 py-1.5 font-bold cursor-pointer hover:bg-gray-100"
                     @click="viewConversation(user.conversationId)">
                     <img class="h-10 w-10" :src="user.avatar" alt="" v-if="user.avatar" />
                     <p :style="`border:1.5px solid ${user.color}`"
