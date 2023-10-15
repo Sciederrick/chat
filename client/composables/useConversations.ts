@@ -39,7 +39,7 @@ export const useConversations = () => {
 
     const _buildConversationObjectNestedRecipient = function (participants: ParticipantProfile[], myId: string): NestedRecipient {
         const recipient = <NestedRecipient>{};
-        const filteredParticipant = participants.filter(participant => participant._id == myId)[0];
+        const filteredParticipant = participants.filter(participant => participant._id != myId)[0];
         recipient["id"] = filteredParticipant._id;
         recipient["avatar"] = filteredParticipant?.avatar ?? "";
         recipient["name"] = filteredParticipant.bio.fullName;
