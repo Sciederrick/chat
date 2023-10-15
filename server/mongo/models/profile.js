@@ -1,11 +1,6 @@
 const mongoose = require("mongoose");
 
-const bioSchema = new mongoose.Schema({
-  fullName: { type: String, required: true },
-  title: String,
-  about: String,
-  links: [String],
-});
+const bioSchema = require("./bio.schema");
 
 const profileSchema = new mongoose.Schema(
   {
@@ -13,10 +8,8 @@ const profileSchema = new mongoose.Schema(
     avatar: { type: String },
     isMale: { type: Boolean, required: true },
     bio: { type: bioSchema, required: true },
-    role: { type: String, default: "client" },
-    password: { type: String, required: true },
-    createdAt: { type: Date, default: Date.now },
-    updatedAt: { type: Date, default: Date.now },
+    role: { type: String, required: true, enum: ["client", "group", "admin"] },
+    password: { type: String, required: true }
   },
   // @ts-ignore
   { timestamp: true, _id: true, autoIndex: true }

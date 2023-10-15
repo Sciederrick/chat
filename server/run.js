@@ -3,7 +3,6 @@ const db = require("./mongo/db");
 const chat = require("./chat/app");
 
 const port = process.env.PORT || 3080;
-const port2 = process.env.PORT2 || 3095;
 const result = require("dotenv").config();
 if (result.error) {
   console.log(result.error);

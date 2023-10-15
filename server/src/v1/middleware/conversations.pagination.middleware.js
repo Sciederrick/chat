@@ -1,7 +1,7 @@
 const { Types } = require("mongoose");
 const {
   validateGetConversationIdsByUserId,
-} = require("../validate/chat.validate");
+} = require("./../validate/conversation.validate");
 
 function paginatedConversations(model) {
   return async (req, res, next) => {

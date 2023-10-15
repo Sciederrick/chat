@@ -5,20 +5,13 @@ const {
   updateMessageById,
   updateMessagesByConversationId,
   deleteMessage,
-  createConversation,
-  deleteConversation,
   getMessagesByConversationId,
-} = require("./../controllers/chat.controller");
-
-const Conversation = require("./../../../mongo/models/conversation");
-const {
-  paginatedConversations,
-} = require("./../middleware/conversations.pagination.middleware");
+} = require("./../controllers/message.controller");
 
 router
   .route("/")
   /**
-   * @api {post} /chats/ Create Message
+   * @api {post} /messages/ Create Message
    * @apiName CreateMessage
    * @apiGroup Chat
    *
@@ -50,7 +43,7 @@ router
 router
   .route("/")
   /**
-   * @api {delete} /chats/ Delete Message
+   * @api {delete} /messages/ Delete Message
    * @apiName DeleteMessage
    * @apiGroup Chat
    *
@@ -70,7 +63,7 @@ router
 router
   .route("/:conversationId")
   /**
-   * @api {get} /chats/:conversationId Get Messages by conversation id
+   * @api {get} /messages/:conversationId Get Messages by conversation id
    * @apiName GetMessagesByConversationId
    * @apiGroup Chat
    *
@@ -108,7 +101,7 @@ router
 router
   .route("/:id")
   /**
-   * @api {put} /chats/:id Update Message by id
+   * @api {put} /messages/:id Update Message by id
    * @apiName UpdateMessageById
    * @apiGroup Chats
    *
@@ -133,7 +126,7 @@ router
   router
     .route("/:conversationId/seen")
     /**
-     * @api {put} /chats/:conversationId/seen    Update Messages Seen Status for the given sender By conversationId
+     * @api {put} /messages/:conversationId/seen    Update Messages Seen Status for the given sender By conversationId
      * @apiName UpdateMessageSeenStatusByConversationId
      * @apiGroup Chat
      *
@@ -154,92 +147,6 @@ router
      */
     .put(updateMessagesByConversationId);
 
-router
-  .route("/conversations")
-  /**
-   * @api {patch} /chats/conversations/ Create Conversation
-   * @apiName CreateConversation
-   * @apiGroup Chat
-   *
-   * @apiBody {String[]} participants        Mandatory user ids, minimum of 2 ids
-   * @apiBody {Boolean}  [private=true]      Optional converation type i.e "group" or "private" conversation
-   *
-   * @apiSuccess {String[]} participants User ids
-   *
-   * @apiSuccessExample Success-Response
-   * {
-   *   "private": false,
-   *   "participants": [
-   *     "64a7ea71cc7efe460fc69823",
-   *     "64a7e734cc7efe460fc69805"
-   *   ],
-   *   "_id": "64a7ed6f1c36075c69e3dd48",
-   *   "__v": 0
-   * }
-   *
-   */
-  .post(createConversation);
-
-router
-  .route("/conversations")
-  /**
-   * @api {delete} /chats/conversations/ Delete Conversation
-   * @apiName DeleteConversation
-   * @apiGroup Chat
-   *
-   * @apiBody {String} conversationId  Conversation id
-   *
-   * @apiSuccess {Boolean} Success  Indicates if it was successfully deleted
-   *
-   * @apiSuccessExample Success-Response
-   * {
-   *   "success": true,
-   * }
-   *
-   */
-  .delete(deleteConversation);
-
-router
-  .route("/conversations/:userId")
-  /**
-   * @api {post} /chats/conversations/:userId Get Conversations by User Id
-   * @apiName GetConversationsByUserId
-   * @apiGroup Chat
-   *
-   * @apiParam {String} userId User Id
-   *
-   * @apiQuery {Number} [page=1]       Optional page number
-   * @apiQuery {Number} [limit=50]     Optional results limit per page
-   * @apiQuery {String} [private=true] Optional conversation type (private or group conversation)
-   *
-   * @apiSuccessExample Success-Response
-   * {
-   *   "info": {
-   *     "limit": 50,
-   *     "next": null,
-   *     "previous": null,
-   *     "count": 1,
-   *     "pages": 1
-   *   },
-   *   "results": [
-   *     {
-   *       "private": true,
-   *       "participants": [
-   *         "64b5886c2d0ddf2a54d0d1fc",
-   *         "64b587202d0ddf2a54d0d1ea"
-   *       ],
-   *       "_id": "64be98f5d4a34c3c98fdbbbf",
-   *       "__v": 0
-   *     }
-   *   ]
-   * }
-   */
-  .get(paginatedConversations(Conversation), (_, res, __) => {
-    return res.json(
-      // @ts-ignore
-      res.paginatedResults
-    );
-  });
 
 
 module.exports = router;

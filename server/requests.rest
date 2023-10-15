@@ -120,8 +120,12 @@
 
 # @TODO: Investigate why wrong message id leads to a 500 error
 
-#18. Get Random Profile
-GET http://localhost:3080/api/v1/profiles/M/random
+# #18. Get Random Profile
+# GET http://localhost:3080/api/v1/profiles/M/random
+# Content-Type: application/json
+
+#19. Get Conversations by user id
+GET http://localhost:3098/api/v1/conversations/6505ebff00f0b6e28b0225fe
 Content-Type: application/json
 
 

@@ -1,15 +1,14 @@
 const { Types } = require("mongoose");
-const messageModel = require("./../../../mongo/models/message");
-const conversationModel = require("./../../../mongo/models/conversation");
+const messageModel = require("../../../mongo/models/message");
+const conversationModel = require("../../../mongo/models/conversation");
+
 const {
   validateCreateMessage,
   validateDeleteMessage,
   validateUpdateMessageById,
   validateUpdateMessagesSeenStatusByConversationId,
-  validateCreateConversation,
-  validateDeleteConversation,
   validateGetMessagesByConversationId,
-} = require("./../validate/chat.validate");
+} = require("../validate/message.validate");
 
 const chatController = {};
 
@@ -175,68 +174,6 @@ chatController.updateMessagesByConversationId = async (req, res) => {
   }
 };
 
-chatController.createConversation = async (req, res) => {
-  try {
-    const validInputs = validateCreateConversation(req.body);
-    if (!validInputs)
-      return res.status(400).json({
-        message: "invalid inputs",
-        status: 400,
-      });
 
-    const isAlreadyExists = await conversationModel.findOne({
-      participants: {
-        $all: validInputs.participants,
-      },
-    });
-
-    if (isAlreadyExists) return res.status(409).json(isAlreadyExists);
-
-    const newConversation = await conversationModel.create(validInputs);
-
-    return res.status(201).json(newConversation);
-  } catch (err) {
-    console.error(err);
-    return res
-      .status(500)
-      .json({ message: "Something went wrong", status: 500 });
-  }
-};
-
-chatController.deleteConversation = async (req, res) => {
-  try {
-    if (!validateDeleteConversation(req.body))
-      return res.status(400).json({ message: "invalid input", status: 400 });
-
-    const isConvDeleted = await conversationModel.deleteOne({
-      _id: req.body.conversationId,
-    });
-    if (isConvDeleted.n === 0)
-      return res
-        .status(404)
-        .json({ message: "conversation not found", status: 404 });
-    let isSuccess = true;
-
-    const doMsgsExist = await messageModel.findOne({
-      conversationId: req.body.conversationId,
-    });
-    if (doMsgsExist !== null) {
-      const areMsgsDeleted = await messageModel.deleteMany({
-        conversationId: req.body.conversationId,
-      });
-
-      isSuccess = areMsgsDeleted.n !== 0;
-    }
-
-    return res.status(201).json({
-      success: isSuccess,
-    });
-  } catch (err) {
-    console.error(err);
-    return res
-      .status(500)
-      .json({ message: "Something went wrong", status: 500 });
-  }
-};
 
 module.exports = chatController;

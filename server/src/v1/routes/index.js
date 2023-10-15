@@ -1,7 +1,8 @@
 const express = require('express');
 
 const authRouter = require('./auth.route');
-const chatRouter = require("./chat.route");
+const messageRouter = require("./message.route");
+const conversationRouter = require("./conversation.route");
 const profileRouter = require("./profile.route");
 
 const router = express.Router();
@@ -14,7 +15,8 @@ router.get("/", (_, res) => {
 });
 
 router.use("/auth", authRouter);
-router.use("/chats", chatRouter);
+router.use("/messages", messageRouter);
+router.use("/conversations", conversationRouter);
 router.use("/profiles", profileRouter);
 
 
