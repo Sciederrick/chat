@@ -89,7 +89,7 @@ async function loadConversations() {
     const { useLoadMyConversations } = useConversations();
     const conversationsResp = await useLoadMyConversations();
     if (conversationsResp) {
-        privateConversations.value = conversationsResp;
+        privateConversations.value = conversationsResp.privateConversations;
     }
 }
 

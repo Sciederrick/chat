@@ -14,24 +14,32 @@ export interface Me {
     updatedAt?: string;
 };
 
+export interface Conversations {
+    groupConversations: GroupConversation[],
+    privateConversations: PrivateConversation[]
+}
+
+export interface GroupConversation {
+    id: string; // conversationId
+    recipient: Recipient[];
+    lastMessage?: LastMessage
+}
+
 export interface PrivateConversation {
     id: string; // conversationId
-    recipient: {
-        id: string; // userId
-        avatar?: string;
-        name: string;
-        title: string;
-        about: string;
-        links?: string[];
-        color: string;
-        gender: string;
-    };
-    lastMessage?: {
-        text: string;
-        createdAt: string;
-        senderId: string;
-        seen: boolean;          
-    }  
+    recipient: Recipient;
+    lastMessage?: LastMessage  
+}
+
+interface Recipient {
+    id: string; // userId
+    avatar?: string;
+    name: string;
+    title: string;
+    about: string;
+    links?: string[];
+    color: string;
+    gender: string;
 }
 
 interface Bio {
