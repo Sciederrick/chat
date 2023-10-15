@@ -1,64 +1,16 @@
 <script setup lang="ts">
-const { useHexRandomColor, useInitials, useLightenHexColor } = useUtils();
+import { PrivateConversation } from '~/types/index';
+import { useProfileStore } from '~/store/profile';
+import { storeToRefs }  from 'pinia';
 
-type Me = {
-    email: string,
-    avatar: string,
-    isMale: boolean,
-    bio: {
-        fullName: string,
-        title: string,
-        about: String,
-        links?: [string],
-    },
-    role: string,
-    createdAt?: string,
-    updatedAt?: string,
-};
-const me = ref<Me>();
-assignDefaultUser();
-const users = ref([
-    {
-        id: "b",
-        avatar: null,
-        name: "Ernest Hanson",
-        color: useHexRandomColor(),
-        conversationId: "1",
-        role: "normal",
-    },
-    {
-        id: "c",
-        avatar: null,
-        name: "Brian Abwenje",
-        color: useHexRandomColor(),
-        conversationId: "2",
-        role: "normal",
-    },
-    {
-        id: "d",
-        avatar: null,
-        name: "Josephine Nabwire",
-        color: useHexRandomColor(),
-        conversationId: "3",
-        role: "normal",
-    },
-    {
-        id: "e",
-        avatar: null,
-        name: "Leila Adams",
-        color: useHexRandomColor(),
-        conversationId: "4",
-        role: "normal",
-    },
-    {
-        id: "f",
-        avatar: null,
-        name: "Nikita Broadways LongsDale Kim",
-        color: useHexRandomColor(),
-        conversationId: "5",
-        role: "normal",
-    },
-]);
+const { useHexRandomColor, useInitials, useLightenHexColor } = useUtils();
+const profileStore = useProfileStore();
+
+const { me } = storeToRefs(profileStore);
+const { assignDefaultUser, loadMyProfileFromLocalStorage } = profileStore;
+
+const privateConversations = ref<PrivateConversation[] | null>(null);
+
 const groups = ref([
     {
         id: "f",
@@ -121,31 +73,6 @@ const messages = ref([
     },
 ]);
 
-function loadUserFromLocalStorage() {
-    const userFromLocalStorage = localStorage.getItem("chatly-user") as string;
-    if (userFromLocalStorage != null) {
-        const user = JSON.parse(userFromLocalStorage);
-        user.color = useHexRandomColor();
-        me.value = user;
-    }
-};
-
-function assignDefaultUser() {
-    me.value = {
-        email: "johndoe@example.com",
-        avatar: "",
-        isMale: true,
-        bio: {
-            fullName: "John Doe",
-            title: "Data Scientist",
-            about: "Product focused developer building data driven applications",
-            links: undefined,
-        },
-        role: "client"
-    }
-
-}
-
 const templateImages = ref(useUtils().useAssetImages());
 
 const userAvatar = computed<string>(() => {
@@ -153,8 +80,22 @@ const userAvatar = computed<string>(() => {
     return templateImages.value?.[key];
 });
 
-onBeforeMount(() => {
-    loadUserFromLocalStorage();
+function loadMyProfile() {
+    loadMyProfileFromLocalStorage();
+    if (!me.value) assignDefaultUser();
+}
+
+async function loadConversations() {
+    const { useLoadMyConversations } = useConversations();
+    const conversationsResp = await useLoadMyConversations();
+    if (conversationsResp) {
+        privateConversations.value = conversationsResp;
+    }
+}
+
+onBeforeMount(async () => {
+    loadMyProfile();
+    await loadConversations();
 });
 
 </script>
@@ -190,16 +131,17 @@ onBeforeMount(() => {
                 <div class="w-full h-[0.5px] bg-gray-200">&nbsp;</div>
             </div>
             <!--#region private conversations-->
-            <ul class="divide-y">
-                <li v-for="user in users"
+            <ul class="divide-y" v-if="privateConversations">
+                <li v-for="conversation in privateConversations"
                     class="flex items-center gap-x-4 py-1.5 font-bold cursor-pointer hover:bg-gray-100"
-                    @click="viewConversation(user.conversationId)">
-                    <img class="h-10 w-10" :src="user.avatar" alt="" v-if="user.avatar" />
-                    <p :style="`border:1.5px solid ${user.color}`"
+                    @click="viewConversation(conversation.id)">
+                    <img class="h-10 w-10" :src="conversation.recipient?.avatar" alt=""
+                        v-if="conversation.recipient?.avatar" />
+                    <p :style="`border:1.5px solid ${conversation.recipient.color}`"
                         class="h-10 w-10 rounded-full flex items-center justify-center bg-gray-200" v-else>
-                        {{ useInitials(user.name) }}
+                        {{ useInitials(conversation.recipient.name) }}
                     </p>
-                    <p class="truncate">{{ user.name }}</p>
+                    <p class="truncate">{{ conversation.recipient.name }}</p>
                 </li>
             </ul>
             <!--#endregion private conversations-->
