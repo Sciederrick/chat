@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { PrivateConversation } from '~/types/index';
+import { GroupConversation, PrivateConversation } from '~/types/index';
 import { useProfileStore } from '~/store/profile';
 import { storeToRefs }  from 'pinia';
 
@@ -10,25 +10,7 @@ const { me } = storeToRefs(profileStore);
 const { assignDefaultUser, loadMyProfileFromLocalStorage } = profileStore;
 
 const privateConversations = ref<PrivateConversation[] | null>(null);
-
-const groups = ref([
-    {
-        id: "f",
-        avatar: null,
-        name: "TensorFlow",
-        color: useHexRandomColor(),
-        conversationId: "5",
-        role: "group",
-    },
-    {
-        id: "g",
-        avatar: null,
-        name: "Data Cleaning",
-        color: useHexRandomColor(),
-        conversationId: "6",
-        role: "group",
-    },
-]);
+const groupConversations = ref<GroupConversation[] | null>(null);
 
 const activeConversationId = ref<string | null>(null);
 
@@ -89,7 +71,11 @@ async function loadConversations() {
     const { useLoadMyConversations } = useConversations();
     const conversationsResp = await useLoadMyConversations();
     if (conversationsResp) {
-        privateConversations.value = conversationsResp.privateConversations;
+        if (conversationsResp.privateConversations.length > 0)
+            privateConversations.value = conversationsResp.privateConversations;
+
+        if (conversationsResp.groupConversations.length > 0)
+            groupConversations.value = conversationsResp.groupConversations;
     }
 }
 
@@ -117,12 +103,12 @@ onBeforeMount(async () => {
                 New Message
             </button>
             <!--#region group conversations-->
-            <ul class="divide-y">
-                <li v-for="group in groups"
+            <ul class="divide-y" v-show="groupConversations">
+                <li v-for="groupConversation in groupConversations"
                     class="flex items-center gap-x-4 py-1.5 font-bold cursor-pointer hover:bg-gray-100"
-                    @click="viewConversation(group.conversationId)">
+                    @click="viewConversation(groupConversation.id)">
                     <img class="h-8 w-8" src="~/assets/hash.svg" alt="group avatar" />
-                    <p class="truncate">{{ group.name }}</p>
+                    <p class="truncate">{{ groupConversation.recipient[0].name }}</p>
                 </li>
             </ul>
             <!--#endregion-->
@@ -131,7 +117,7 @@ onBeforeMount(async () => {
                 <div class="w-full h-[0.5px] bg-gray-200">&nbsp;</div>
             </div>
             <!--#region private conversations-->
-            <ul class="divide-y" v-if="privateConversations">
+            <ul class="divide-y" v-show="privateConversations">
                 <li v-for="conversation in privateConversations"
                     class="flex items-center gap-x-4 py-1.5 font-bold cursor-pointer hover:bg-gray-100"
                     @click="viewConversation(conversation.id)">
