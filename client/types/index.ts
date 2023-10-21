@@ -83,3 +83,19 @@ export interface NestedRecipient {
     color: string; 
     gender: string;
 }
+
+export interface  MessagesApiResponse {
+    conversationId: string,
+    messageBatches: MessageBatches[];
+}
+
+export interface MessageBatches {
+    _id: string,
+    allMessages: AllMessages[]
+}
+
+export interface AllMessages {
+    message: string,
+    senderId: string,
+    timestamp: string
+}

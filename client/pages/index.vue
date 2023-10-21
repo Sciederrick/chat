@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { GroupConversation, PrivateConversation } from '~/types/index';
+import { GroupConversation, PrivateConversation, MessageBatches } from '~/types/index';
 import { useProfileStore } from '~/store/profile';
 import { storeToRefs }  from 'pinia';
 
@@ -20,40 +20,15 @@ const isActiveConversation = computed(() => {
 
 function viewConversation(id: string) {
     activeConversationId.value = id;
+    loadMessages(id);
 }
 
-const dateISO = new Date(Date.now()).toISOString();
-const messages = ref([
-    {
-        date: dateISO.substring(0, 10),
-        content: [
-            {
-                conversationId: "4",
-                msg: "Hello",
-                senderId: "a",
-                time: dateISO.substring(11, 16),
-            },
-            {
-                conversationId: "4",
-                msg: "Hello",
-                senderId: "e",
-                time: dateISO.substring(11, 16),
-            },
-            {
-                conversationId: "4",
-                msg: "How is the programme going?",
-                senderId: "a",
-                time: dateISO.substring(11, 16),
-            },
-            {
-                conversationId: "4",
-                msg: "Its great!",
-                senderId: "e",
-                time: dateISO.substring(11, 16),
-            },
-        ],
-    },
-]);
+const messages = ref<MessageBatches[] | null>(null);
+async function loadMessages(conversationId: string) {
+   const { useLoadMessages } =  useMessages();
+   const response = await useLoadMessages(conversationId);
+   if (response && response.length > 0) messages.value = response;
+}
 
 const templateImages = ref(useUtils().useAssetImages());
 
@@ -155,26 +130,32 @@ onBeforeMount(async () => {
             </header>
             <!--#region texts box-->
             <div class="p-2 border-2 border-gray-200 rounded-md h-[75vh] flex flex-col">
-                <ul class="w-full h-full flex flex-col overflow-y-auto">
-                    <li v-for="msg in  messages[0].content " :class="{ 'justify-end': msg.senderId == 'a' }"
-                        class="relative flex items-end gap-x-4 py-1 my-4 font-semibold">
-                        <img :class="{ 'order-last': msg.senderId == 'a' }" class="h-8 w-8" src="" alt="" v-if="false" />
-                        <div :style="[msg.senderId == 'e' ? `border:1.5px solid #ED2647` : `border: 1.5px solid #A0D6B4`]"
-                            :class="{ 'order-last': msg.senderId == 'a' }"
-                            class="h-8 w-8 rounded-full flex items-center justify-center text-sm" v-else>
-                            {{ useInitials("Leila Adams") }}
-                        </div>
-                        <div :style="[msg.senderId == 'e' ? `background-color:${useLightenHexColor('#ED2647', 75)}` : `background-color:${useLightenHexColor('#A0D6B4', 75)}`]"
-                            :class="[msg.senderId == 'e' ? 'rounded-bl-none' : 'rounded-br-none']" class="p-1.5 rounded-xl">
-                            {{ msg.msg }}</div>
-                        <div :class="[msg.senderId == 'a' ? 'right-12' : 'left-12']"
-                            class="absolute -bottom-4 text-xs font-normal">
-                            <span class="text-gray-700 font-semibold">{{ msg.senderId == "a" ? "Me" : "Leila Adams"
-                            }}</span>&nbsp;
-                            <span class="text-gray-400"> {{ msg.time }} </span>
-                        </div>
-                    </li>
-                </ul>
+                <div v-if="messages && messages?.length > 0">
+                    <div v-for="msg in messages" :key="msg._id">
+                        <div>{{ msg._id }}</div>
+                        <ul class="w-full h-full flex flex-col overflow-y-auto" v-if="msg.allMessages && msg.allMessages.length > 0">
+                            <li v-for="msg in msg.allMessages" :key="msg.timestamp" :class="{ 'justify-end': msg.senderId == 'a' }"
+                                class="relative flex items-end gap-x-4 py-1 my-4 font-semibold">
+                                <img :class="{ 'order-last': msg.senderId == 'a' }" class="h-8 w-8" src="" alt="" v-if="false" />
+                                <div :style="[msg.senderId == 'e' ? `border:1.5px solid #ED2647` : `border: 1.5px solid #A0D6B4`]"
+                                    :class="{ 'order-last': msg.senderId == 'a' }"
+                                    class="h-8 w-8 rounded-full flex items-center justify-center text-sm" v-else>
+                                    {{ useInitials("Leila Adams") }}
+                                </div>
+                                <div :style="[msg.senderId == 'e' ? `background-color:${useLightenHexColor('#ED2647', 75)}` : `background-color:${useLightenHexColor('#A0D6B4', 75)}`]"
+                                    :class="[msg.senderId == 'e' ? 'rounded-bl-none' : 'rounded-br-none']" class="p-1.5 rounded-xl">
+                                    {{ msg.message }}</div>
+                                <div :class="[msg.senderId == 'a' ? 'right-12' : 'left-12']"
+                                    class="absolute -bottom-4 text-xs font-normal">
+                                    <span class="text-gray-700 font-semibold">{{ msg.senderId == "a" ? "Me" : "Leila Adams"
+                                    }}</span>&nbsp;
+                                    <span class="text-gray-400"> {{ msg.timestamp }} </span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="w-full h-full">&nbsp;</div>
                 <!--#region typing indicator-->
                 <div class="flex items-center gap-4 mt-6 mb-2">
                     <img class="h-8 w-8" src="" alt="" v-if="false" />
