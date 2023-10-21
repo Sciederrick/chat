@@ -43,9 +43,17 @@ conversationController.getConversationsByParticipant = async (req, res) => {
 
     
     console.log("🚀 ~ file: conversation.controller.js:47 ~ conversationController.getConversationsByParticipant= ~ validatedParams.userId:", validatedParams.userId)
-    const conversations = await conversationModel.find({
-      participantProfiles: { $elemMatch: { _id: validatedParams.userId } },
-    });
+    // const conversations = await conversationModel.find({
+    //   participantProfiles: { $exists: { _id: validatedParams.userId } },
+    // });
+    const conversations = await conversationModel.aggregate([
+      {
+        $match: {
+          'participantProfiles._id': "6533e19eefc5772b80559a0b"
+        }
+      }
+    ])
+    console.log("🚀 ~ file: conversation.controller.js:49 ~ conversationController.getConversationsByParticipant= ~ conversations:", conversations)
     if (!conversations)
       return res
         .status(404)

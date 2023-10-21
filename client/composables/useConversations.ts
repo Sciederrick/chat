@@ -16,8 +16,8 @@ export const useConversations = () => {
             const profileStore = useProfileStore();
             const { me } = storeToRefs(profileStore);
 
-            let privateConversations = data.value?.filter((conversation: { private: Boolean; }) => conversation.private = true);
-            let groupConversations = data.value?.filter((conversation: { private: Boolean; }) => conversation.private = false);
+            let privateConversations = data.value?.filter((conversation: { private: Boolean; }) => conversation.private == true);
+            let groupConversations = data.value?.filter((conversation: { private: Boolean; }) => conversation.private == false);
 
             privateConversations = _buildConversationArrOfObjects(privateConversations as ConversationApiResponse[], me.value!.id, true);
             groupConversations = _buildConversationArrOfObjects(groupConversations as ConversationApiResponse[], me.value!.id, false);
@@ -52,7 +52,7 @@ export const useConversations = () => {
             const filteredParticipant = participants.filter(participant => participant._id != myId)[0];
             recipient = _buildRecipientObject(recipient, filteredParticipant);
         } else {
-            const filteredParticipants = participants.filter(participant => participant._id != myId);
+            const filteredParticipants = participants.filter(participant => participant.role == "group");
             filteredParticipants.forEach(filteredParticipant => {
                 const recipientObj = _buildRecipientObject(recipient, filteredParticipant);
                 recipients.push(recipientObj);

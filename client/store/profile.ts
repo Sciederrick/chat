@@ -4,11 +4,11 @@ import { Me } from '~/types/index'
 
 export const useProfileStore = defineStore('profile-store', () => {
     const me = ref<Me>();
-    
+
     function assignDefaultUser() {
         me.value = {
-            id: "6505ebff00f0b6e28b0225fe",
-            email: "davidjohnson@example.com",
+            id: "6533e19eefc5772b80559a0b",
+            email: "johndoe@example.com",
             avatar: "",
             isMale: true,
             bio: {
