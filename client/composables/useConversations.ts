@@ -4,8 +4,8 @@ import { useProfileStore } from '~/store/profile';
 const { useHexRandomColor } = useUtils();
 
 export const useConversations = () => {
-    const useLoadMyConversations = async function (): Promise<Conversations | null | false> {
-        const { data } = await useFetch("/api/conversations/6505ebff00f0b6e28b0225fe")
+    const useLoadMyConversations = async function (userId: string): Promise<Conversations | null | false> {
+        const { data } = await useFetch(`/api/conversations/${userId}`)
 
         if (!data.value) {
             console.log("handle error")

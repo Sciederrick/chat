@@ -3,7 +3,7 @@ import { GroupConversation, PrivateConversation } from '~/types/index';
 import { useProfileStore } from '~/store/profile';
 import { storeToRefs }  from 'pinia';
 
-const { useHexRandomColor, useInitials, useLightenHexColor } = useUtils();
+const { useInitials, useLightenHexColor } = useUtils();
 const profileStore = useProfileStore();
 
 const { me } = storeToRefs(profileStore);
@@ -69,7 +69,7 @@ function loadMyProfile() {
 
 async function loadConversations() {
     const { useLoadMyConversations } = useConversations();
-    const conversationsResp = await useLoadMyConversations();
+    const conversationsResp = await useLoadMyConversations(me.value!.id);
     if (conversationsResp) {
         if (conversationsResp.privateConversations.length > 0)
             privateConversations.value = conversationsResp.privateConversations;
@@ -81,7 +81,7 @@ async function loadConversations() {
 
 onBeforeMount(async () => {
     loadMyProfile();
-    await loadConversations();
+    if(me.value) await loadConversations();
 });
 
 </script>
