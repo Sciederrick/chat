@@ -29,7 +29,11 @@ function viewConversation(id: string, recipient:Recipient) {
 const isShowLeftSidebar = ref(true);
 
 function toggleLeftSidebar() {
-    isShowLeftSidebar.value = !isShowLeftSidebar.value;
+    if (isSmallScreen.value) {
+        activeConversationId.value = null;
+    } else {
+        isShowLeftSidebar.value = !isShowLeftSidebar.value;
+    }
 }
 
 const messages = ref<MessageBatches[] | null>(null);
@@ -64,11 +68,26 @@ async function loadConversations() {
     }
 }
 
+
 onBeforeMount(async () => {
     loadMyProfile();
     if(me.value) await loadConversations();
 });
 
+const innerWidth = ref<number>(window.innerWidth);
+const isSmallScreen = computed<boolean>(() => {
+    return innerWidth.value < 768;
+});
+function handleResize() {
+    innerWidth.value = window.innerWidth;
+}
+onMounted(() => {
+    window.addEventListener('resize', handleResize);
+});
+
+onBeforeUnmount(() => {
+    window.removeEventListener('resize', handleResize);
+});
 </script>
 <template>
     <header class="flex justify-between items-center py-4 px-2 2xl:container 2xl:mx-auto">
