@@ -63,10 +63,36 @@ export const useUtils = () => {
     return templateImages;
   };
 
+  /**
+   * Create human readable time format
+   */
+  const useHumanReadableDate = function (dateStr: string) :string {
+    let today = new Date()
+    let yesterday = useGetYesterdaysDate(today);
+    let inputDate = new Date(dateStr)
+    if (inputDate.toDateString() == today.toDateString())
+      return "today";
+    else if (inputDate.toDateString() == yesterday.toDateString())
+      return "yesterday";
+    else
+      return dateStr;
+  }
+
+  const useHumanReadableTime = function (dateTimeStr: string) :string {
+    return dateTimeStr.split("T")[1].slice(0, 5)
+  }
+
+  const useGetYesterdaysDate = function (today: Date) :Date {
+    const yesterday = new Date(today);
+    return new Date(yesterday.setDate(today.getDate() - 1));
+  } 
+
   return {
     useInitials,
     useHexRandomColor,
     useLightenHexColor,
-    useAssetImages
+    useAssetImages,
+    useHumanReadableDate,
+    useHumanReadableTime    
   };
 };

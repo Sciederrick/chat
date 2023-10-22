@@ -142,7 +142,9 @@ onBeforeMount(async () => {
             <div class="p-2 border-2 border-gray-200 rounded-md h-[75vh] flex flex-col">
                 <div v-if="messages && messages?.length > 0">
                     <div v-for="msg in messages" :key="msg._id">
-                        <div>{{ msg._id }}</div>
+                        <div class="w-full flex justify-center">
+                            <span class="px-2 py-1 rounded-sm text-xs bg-gray-100">{{ useUtils().useHumanReadableDate(msg._id) }}</span>
+                        </div>
                         <ul class="w-full h-full flex flex-col overflow-y-auto" v-if="msg.allMessages && msg.allMessages.length > 0">
                             <li v-for="msg in msg.allMessages" :key="msg.timestamp" :class="{ 'justify-end': msg.senderId == me!.id }"
                                 class="relative flex items-end gap-x-4 py-1 my-4 font-semibold">
@@ -159,7 +161,7 @@ onBeforeMount(async () => {
                                     class="absolute -bottom-4 text-xs font-normal">
                                     <span class="text-gray-700 font-semibold">{{ msg.senderId == me!.id ? "Me" : activeRecipient!.name
                                     }}</span>&nbsp;
-                                    <span class="text-gray-400"> {{ msg.timestamp }} </span>
+                                    <span class="text-gray-400"> {{ useUtils().useHumanReadableTime(msg.timestamp) }} </span>
                                 </div>
                             </li>
                         </ul>
