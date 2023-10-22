@@ -31,7 +31,7 @@ export interface PrivateConversation {
     lastMessage?: LastMessage  
 }
 
-interface Recipient {
+export interface Recipient {
     id: string; // userId
     avatar?: string;
     name: string;
@@ -71,17 +71,6 @@ export interface ConversationApiResponse {
 	private: boolean;
     lastMessage?: LastMessage,
 	participantProfiles: ParticipantProfile[];
-}
-
-export interface NestedRecipient {
-    id: string;
-    avatar: string;
-    name: string;
-    title: string;
-    about: string;
-    links: string[];
-    color: string; 
-    gender: string;
 }
 
 export interface  MessagesApiResponse {

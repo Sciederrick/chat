@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { GroupConversation, PrivateConversation, MessageBatches } from '~/types/index';
+import { GroupConversation, PrivateConversation, MessageBatches, Recipient} from '~/types/index';
 import { useProfileStore } from '~/store/profile';
 import { storeToRefs }  from 'pinia';
 
@@ -13,21 +13,31 @@ const privateConversations = ref<PrivateConversation[] | null>(null);
 const groupConversations = ref<GroupConversation[] | null>(null);
 
 const activeConversationId = ref<string | null>(null);
+const activeRecipient = ref<Recipient | null>(null);
 
 const isActiveConversation = computed(() => {
     return activeConversationId.value != null;
 })
 
-function viewConversation(id: string) {
+
+function viewConversation(id: string, recipient:Recipient) {
     activeConversationId.value = id;
+    activeRecipient.value = recipient;
     loadMessages(id);
+}
+
+const isShowLeftSidebar = ref(true);
+
+function toggleLeftSidebar() {
+    isShowLeftSidebar.value = !isShowLeftSidebar.value;
 }
 
 const messages = ref<MessageBatches[] | null>(null);
 async function loadMessages(conversationId: string) {
    const { useLoadMessages } =  useMessages();
    const response = await useLoadMessages(conversationId);
-   if (response && response.length > 0) messages.value = response;
+
+   messages.value = response && response.length > 0 ? response : null;
 }
 
 const templateImages = ref(useUtils().useAssetImages());
@@ -72,7 +82,7 @@ onBeforeMount(async () => {
     </header>
     <main class="px-2 md:flex 2xl:container 2xl:mx-auto">
         <!--#region left sidebar-->
-        <aside :class="{ hidden: isActiveConversation }" class="pr-2 w-full md:block md:w-1/3 lg:w-[350px]">
+        <aside :class="{ hidden: isActiveConversation }" class="pr-2 w-full md:block md:w-1/3 lg:w-[350px]" v-show="isShowLeftSidebar">
             <button class="btn btn-black fixed bottom-8 right-2 md:static md:my-4" type="button">
                 <Icon name="streamline:interface-edit-pencil-change-edit-modify-pencil-write-writing" />
                 New Message
@@ -81,7 +91,7 @@ onBeforeMount(async () => {
             <ul class="divide-y" v-show="groupConversations">
                 <li v-for="groupConversation in groupConversations"
                     class="flex items-center gap-x-4 py-1.5 font-bold cursor-pointer hover:bg-gray-100"
-                    @click="viewConversation(groupConversation.id)">
+                    @click="viewConversation(groupConversation.id, groupConversation.recipient[0])">
                     <img class="h-8 w-8" src="~/assets/hash.svg" alt="group avatar" />
                     <p class="truncate">{{ groupConversation.recipient[0].name }}</p>
                 </li>
@@ -93,16 +103,16 @@ onBeforeMount(async () => {
             </div>
             <!--#region private conversations-->
             <ul class="divide-y" v-show="privateConversations">
-                <li v-for="conversation in privateConversations"
+                <li v-for="privateConversation in privateConversations"
                     class="flex items-center gap-x-4 py-1.5 font-bold cursor-pointer hover:bg-gray-100"
-                    @click="viewConversation(conversation.id)">
-                    <img class="h-10 w-10" :src="conversation.recipient?.avatar" alt=""
-                        v-if="conversation.recipient?.avatar" />
-                    <p :style="`border:1.5px solid ${conversation.recipient.color}`"
+                    @click="viewConversation(privateConversation.id, privateConversation.recipient)">
+                    <img class="h-10 w-10" :src="privateConversation.recipient?.avatar" alt=""
+                        v-if="privateConversation.recipient?.avatar" />
+                    <p :style="`border:1.5px solid ${privateConversation.recipient.color}`"
                         class="h-10 w-10 rounded-full flex items-center justify-center bg-gray-200" v-else>
-                        {{ useInitials(conversation.recipient.name) }}
+                        {{ useInitials(privateConversation.recipient.name) }}
                     </p>
-                    <p class="truncate">{{ conversation.recipient.name }}</p>
+                    <p class="truncate">{{ privateConversation.recipient.name }}</p>
                 </li>
             </ul>
             <!--#endregion private conversations-->
@@ -113,15 +123,15 @@ onBeforeMount(async () => {
         <section class="w-full" v-if="isActiveConversation">
             <header class="flex justify-between items-center py-1">
                 <div class="flex items-center gap-2">
-                    <button class="btn pl-0 shadow-none" type="button">
+                    <button class="btn pl-0 shadow-none" type="button" @click="toggleLeftSidebar">
                         <Icon name="ep:back" />
                     </button>
                     <img class="h-8 w-8" src="" alt="" v-if="false" />
                     <div :style="`border:1.5px solid ${'#ED2647'}`"
                         class="h-8 w-8 rounded-full flex items-center justify-center bg-gray-200" v-else>
-                        {{ useInitials("Leila Adams") }}
+                        {{ useInitials(activeRecipient!.name) }}
                     </div>
-                    <h2 class="heading-2">{{ "Leila Adams" }}</h2>
+                    <h2 class="heading-2">{{ activeRecipient!.name }}</h2>
                 </div>
                 <button class="btn shadow-none text-gray-700 lg:hidden">
                     Docs
@@ -134,20 +144,20 @@ onBeforeMount(async () => {
                     <div v-for="msg in messages" :key="msg._id">
                         <div>{{ msg._id }}</div>
                         <ul class="w-full h-full flex flex-col overflow-y-auto" v-if="msg.allMessages && msg.allMessages.length > 0">
-                            <li v-for="msg in msg.allMessages" :key="msg.timestamp" :class="{ 'justify-end': msg.senderId == 'a' }"
+                            <li v-for="msg in msg.allMessages" :key="msg.timestamp" :class="{ 'justify-end': msg.senderId == me!.id }"
                                 class="relative flex items-end gap-x-4 py-1 my-4 font-semibold">
-                                <img :class="{ 'order-last': msg.senderId == 'a' }" class="h-8 w-8" src="" alt="" v-if="false" />
-                                <div :style="[msg.senderId == 'e' ? `border:1.5px solid #ED2647` : `border: 1.5px solid #A0D6B4`]"
-                                    :class="{ 'order-last': msg.senderId == 'a' }"
+                                <img :class="{ 'order-last': msg.senderId == me!.id }" class="h-8 w-8" src="" alt="" v-if="false" />
+                                <div :style="[msg.senderId == activeRecipient!.id ? `border:1.5px solid #ED2647` : `border: 1.5px solid #A0D6B4`]"
+                                    :class="{ 'order-last': msg.senderId == me!.id }"
                                     class="h-8 w-8 rounded-full flex items-center justify-center text-sm" v-else>
-                                    {{ useInitials("Leila Adams") }}
+                                    {{ useInitials(msg.senderId == activeRecipient!.id ? activeRecipient!.name : me!.bio.fullName) }}
                                 </div>
-                                <div :style="[msg.senderId == 'e' ? `background-color:${useLightenHexColor('#ED2647', 75)}` : `background-color:${useLightenHexColor('#A0D6B4', 75)}`]"
-                                    :class="[msg.senderId == 'e' ? 'rounded-bl-none' : 'rounded-br-none']" class="p-1.5 rounded-xl">
+                                <div :style="[msg.senderId == activeRecipient!.id ? `background-color:${useLightenHexColor('#ED2647', 75)}` : `background-color:${useLightenHexColor('#A0D6B4', 75)}`]"
+                                    :class="[msg.senderId == activeRecipient!.id ? 'rounded-bl-none' : 'rounded-br-none']" class="p-1.5 rounded-xl">
                                     {{ msg.message }}</div>
-                                <div :class="[msg.senderId == 'a' ? 'right-12' : 'left-12']"
+                                <div :class="[msg.senderId == me!.id ? 'right-12' : 'left-12']"
                                     class="absolute -bottom-4 text-xs font-normal">
-                                    <span class="text-gray-700 font-semibold">{{ msg.senderId == "a" ? "Me" : "Leila Adams"
+                                    <span class="text-gray-700 font-semibold">{{ msg.senderId == me!.id ? "Me" : activeRecipient!.name
                                     }}</span>&nbsp;
                                     <span class="text-gray-400"> {{ msg.timestamp }} </span>
                                 </div>
@@ -161,7 +171,7 @@ onBeforeMount(async () => {
                     <img class="h-8 w-8" src="" alt="" v-if="false" />
                     <div :style="`border:1.5px solid #FF0000`"
                         class="h-8 w-8 rounded-full flex items-center justify-center text-sm" v-else>
-                        {{ useInitials("Leila Adams") }}
+                        {{ useInitials(activeRecipient!.name) }}
                     </div>
                     <AppTypingEffect />
                 </div>

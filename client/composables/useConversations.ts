@@ -1,4 +1,4 @@
-import { Conversations, GroupConversation, PrivateConversation, ConversationApiResponse, ParticipantProfile, NestedRecipient } from '~/types/index';
+import { Conversations, GroupConversation, PrivateConversation, ConversationApiResponse, ParticipantProfile, Recipient } from '~/types/index';
 import { storeToRefs } from 'pinia';
 import { useProfileStore } from '~/store/profile';
 const { useHexRandomColor } = useUtils();
@@ -44,9 +44,9 @@ export const useConversations = () => {
         });
     }
 
-    const _buildConversationObjectNestedRecipient = function (participants: ParticipantProfile[], myId: string, isPrivate: boolean): NestedRecipient | NestedRecipient[] {
-        let recipient = <NestedRecipient>{};
-        const recipients = <NestedRecipient[]>[];
+    const _buildConversationObjectNestedRecipient = function (participants: ParticipantProfile[], myId: string, isPrivate: boolean): Recipient | Recipient[] {
+        let recipient = <Recipient>{};
+        const recipients = <Recipient[]>[];
 
         if (isPrivate) {
             const filteredParticipant = participants.filter(participant => participant._id != myId)[0];
@@ -62,7 +62,7 @@ export const useConversations = () => {
         return isPrivate ? recipient : recipients;
     }
 
-    function _buildRecipientObject(recipient: NestedRecipient, filteredParticipant: ParticipantProfile): NestedRecipient {
+    function _buildRecipientObject(recipient: Recipient, filteredParticipant: ParticipantProfile): Recipient {
         recipient["id"] = filteredParticipant._id;
         recipient["avatar"] = filteredParticipant?.avatar ?? "";
         recipient["name"] = filteredParticipant.bio.fullName;

@@ -10,7 +10,7 @@ const messageSchema = new mongoose.Schema({
   },
   senderId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
+    ref: "Profile",
     required: true,
   },
   directMessage: { type: Boolean, required: true },
