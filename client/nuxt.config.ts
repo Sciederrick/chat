@@ -5,7 +5,8 @@ export default defineNuxtConfig({
   css: ["@/assets/index.css"],
   runtimeConfig: {
     public: {
-      serverURL: "http://localhost:3098/api/v1"
+      serverUrl: process.env.SERVER_URL,      
+      socketUrl: process.env.SOCKET_URL      
     }
   },
   ssr: false,
