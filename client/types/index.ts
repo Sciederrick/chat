@@ -88,3 +88,5 @@ export interface AllMessages {
     senderId: string,
     timestamp: string
 }
+
+
