@@ -172,7 +172,7 @@ onBeforeUnmount(() => {
                             <li v-for="msg in msg.allMessages" :key="msg.timestamp" :class="{ 'justify-end': msg.senderId == me!.id }"
                                 class="relative flex items-end gap-x-4 py-1 my-4 font-semibold">
                                 <img :class="{ 'order-last': msg.senderId == me!.id }" class="h-8 w-8" src="" alt="" v-if="false" />
-                                <div :style="[msg.senderId == activeRecipients![0].id ? `border: 1.5px solid #A0D6B4` : `border:1.5px solid #ED2647`]"
+                                <div :style="[msg.senderId == me!.id ? `border: 1.5px solid #A0D6B4` : `border:1.5px solid #ED2647`]"
                                     :class="{ 'order-last': msg.senderId == me!.id }"
                                     class="h-8 w-8 rounded-full flex items-center justify-center text-sm" v-else>
                                     {{ useInitials(msg.senderId == me!.id ? me!.bio.fullName : getRecipientName(msg.senderId)) }} 
