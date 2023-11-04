@@ -68,6 +68,10 @@ async function loadConversations() {
     }
 }
 
+function getRecipientName(senderId: string) :string {
+    const senderProfile = activeRecipients.value!.find(recipient => recipient.id == senderId);
+    return senderProfile!.name;
+}
 
 onBeforeMount(async () => {
     loadMyProfile();
@@ -171,15 +175,14 @@ onBeforeUnmount(() => {
                                 <div :style="[msg.senderId == activeRecipients![0].id ? `border:1.5px solid #ED2647` : `border: 1.5px solid #A0D6B4`]"
                                     :class="{ 'order-last': msg.senderId == me!.id }"
                                     class="h-8 w-8 rounded-full flex items-center justify-center text-sm" v-else>
-                                    {{ useInitials(msg.senderId == activeRecipients![0].id ? activeRecipients![0].name : me!.bio.fullName) }}
+                                    {{ useInitials(msg.senderId == me!.id ? me!.bio.fullName : getRecipientName(msg.senderId)) }} <!-- @TODO --> 
                                 </div>
                                 <div :style="[msg.senderId == activeRecipients![0].id ? `background-color:${useLightenHexColor('#ED2647', 75)}` : `background-color:${useLightenHexColor('#A0D6B4', 75)}`]"
                                     :class="[msg.senderId == activeRecipients![0].id ? 'rounded-bl-none' : 'rounded-br-none']" class="p-1.5 rounded-xl">
                                     {{ msg.message }}</div>
                                 <div :class="[msg.senderId == me!.id ? 'right-12' : 'left-12']"
                                     class="absolute -bottom-4 text-xs font-normal">
-                                    <span class="text-gray-700 font-semibold">{{ msg.senderId == me!.id ? "Me" : activeRecipients![0].name
-                                    }}</span>&nbsp;
+                                    <span class="text-gray-700 font-semibold">{{ msg.senderId == me!.id ? "Me" : getRecipientName(msg.senderId) }}</span>&nbsp; <!-- @TODO -->
                                     <span class="text-gray-400"> {{ useUtils().useHumanReadableTime(msg.timestamp) }} </span>
                                 </div>
                             </li>

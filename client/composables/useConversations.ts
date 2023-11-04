@@ -52,11 +52,16 @@ export const useConversations = () => {
             const filteredParticipant = participants.filter(participant => participant._id != myId)[0];
             recipient = _buildRecipientObject(recipient, filteredParticipant);
         } else {
-            const filteredParticipants = participants.filter(participant => participant.role == "group");
+            const filteredParticipants = participants.filter(participant => participant.role != "group");
             filteredParticipants.forEach(filteredParticipant => {
+                recipient = <Recipient>{};
                 const recipientObj = _buildRecipientObject(recipient, filteredParticipant);
                 recipients.push(recipientObj);
             });
+            recipient = <Recipient>{};
+            const groupProfile = _buildRecipientObject(recipient, participants.find(participant => participant.role == "group")!);
+            recipients.unshift(groupProfile);
+            
         }
 
         return isPrivate ? recipient : recipients;
