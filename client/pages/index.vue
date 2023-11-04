@@ -182,7 +182,7 @@ onBeforeUnmount(() => {
                                     {{ msg.message }}</div>
                                 <div :class="[msg.senderId == me!.id ? 'right-12' : 'left-12']"
                                     class="absolute -bottom-4 text-xs font-normal">
-                                    <span class="text-gray-700 font-semibold">{{ msg.senderId == me!.id ? "Me" : getRecipientName(msg.senderId) }}</span>&nbsp; 
+                                    <span class="text-gray-700 font-medium">{{ msg.senderId == me!.id ? "Me" : getRecipientName(msg.senderId) }}</span>&nbsp; 
                                     <span class="text-gray-400"> {{ useUtils().useHumanReadableTime(msg.timestamp) }} </span>
                                 </div>
                             </li>
