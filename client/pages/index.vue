@@ -156,10 +156,6 @@ onBeforeUnmount(() => {
                     </div>
                     <h2 class="heading-2">{{ activeRecipients![0].name }}</h2>
                 </div>
-                <button class="btn shadow-none text-gray-700 lg:hidden">
-                    Docs
-                    <Icon name="entypo:documents" />
-                </button>
             </header>
             <!--#region texts box-->
             <div class="p-2 border-2 border-gray-200 rounded-md h-[75vh] flex flex-col">
@@ -204,9 +200,6 @@ onBeforeUnmount(() => {
                 <div class="flex p-2 mt-1 rounded-md bg-gray-100">
                     <input class="w-full rounded-md bg-gray-100 pr-2 focus:outline-none" type="text" name="send-message"
                         id="send-message" />
-                    <button class="btn btn-white" type="button">
-                        <Icon name="material-symbols:add" />
-                    </button>&nbsp;&nbsp;
                     <button class="btn btn-red" type="button">Send</button>
                 </div>
                 <!--#endregion-->
