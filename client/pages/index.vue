@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Socket } from "socket.io-client";
-import { GroupConversation, PrivateConversation, MessageBatches, Recipient } from '~/types/index';
+import { GroupConversation, PrivateConversation, MessageBatches, Recipient, MessageObject, Role } from '~/types/index';
 import { useProfileStore } from '~/store/profile';
 import { storeToRefs } from 'pinia';
 
@@ -74,22 +74,76 @@ function getRecipientName(senderId: string): string {
     return senderProfile!.name;
 }
 
-const message = ref<string | null>(null);
-let { socket } = useNuxtApp();
+const myMessage = ref<string | null>(null);
+const { socket } = useNuxtApp();
 
 function sendMessage() {
-    if (message.value) {
-        (socket as Socket).emit('message', {
-            conversationId: activeConversationId.value,
+    if (myMessage.value) {
+        const messageObject = {
+            conversationId: activeConversationId.value!,
             senderId: me.value!.id,
-            receiverId: activeRecipients.value![0],
-            role: activeRecipients.value!.length > 2 ? "group" : "client",
-            message: message.value,
+            receiverId: activeRecipients.value![0].id,
+            role: activeRecipients.value!.length > 2 ? Role.Group : Role.Client,
+            message: myMessage.value,
             timestamp: new Date(),
             directMessage: activeRecipients.value!.length > 2 ? false : true
-        });
+        };
+        (socket as Socket).emit('message', messageObject);
+        addMessageToUi(messageObject);
     }
 
+}
+
+const messagesContainer = ref<HTMLElement|null>(null);
+function addMessageToUi(messageObject: MessageObject) {
+    const msgGroupId = messageObject.timestamp.toISOString().slice(0, 10);
+    const uiMsgObject = {
+        message: messageObject.message,
+        senderId: messageObject.senderId,
+        timestamp: messageObject.timestamp.toISOString()
+    }
+    if (messages.value == null || messages.value?.length == 0) {
+        messages.value = [];
+        messages.value.push({
+            _id: msgGroupId,
+            allMessages: []
+        });
+        messages.value[0].allMessages.push(uiMsgObject);
+    } else {
+        let isFoundMatchingMsgId = false;
+        messages.value!.forEach(msg => {
+            if (msg._id == msgGroupId) {
+                msg.allMessages.push(uiMsgObject);
+                isFoundMatchingMsgId = true;
+            }
+        });
+        if (!isFoundMatchingMsgId) {
+            messages.value.push({
+                _id: msgGroupId,
+                allMessages: []
+            });
+            messages.value[messages.value.length -1].allMessages.push(uiMsgObject);
+        }
+    }
+    scrollDown();
+
+}
+
+function scrollDown() {
+    (messagesContainer.value as HTMLElement).lastElementChild!.scrollIntoView({
+      behavior: "smooth",
+      block: "end",
+      inline: "end",
+    });
+}
+
+function connectToSocket() {
+    const { socket } = useNuxtApp();
+    (socket as Socket).emit('user-connect', me.value!.id);
+}
+function disconnectFromSocket() {
+    const { socket } = useNuxtApp();
+    (socket as Socket).emit('user-disconnect');
 }
 
 onBeforeMount(async () => {
@@ -104,12 +158,15 @@ const isSmallScreen = computed<boolean>(() => {
 function handleResize() {
     innerWidth.value = window.innerWidth;
 }
+
 onMounted(() => {
     window.addEventListener('resize', handleResize);
+    connectToSocket();
 });
 
 onBeforeUnmount(() => {
     window.removeEventListener('resize', handleResize);
+    disconnectFromSocket();
 });
 </script>
 <template>
@@ -163,7 +220,7 @@ onBeforeUnmount(() => {
         <!--#endregion-->
 
         <!--#region where messages live-->
-        <section class="w-full" v-if="isActiveConversation">
+        <section class="relative w-full" v-if="isActiveConversation">
             <header class="flex justify-between items-center py-1">
                 <div class="flex items-center gap-2">
                     <button class="btn pl-0 shadow-none" type="button" @click="toggleLeftSidebar">
@@ -178,8 +235,8 @@ onBeforeUnmount(() => {
                 </div>
             </header>
             <!--#region texts box-->
-            <div class="p-2 border-2 border-gray-200 rounded-md h-[75vh] flex flex-col">
-                <div v-if="messages && messages?.length > 0">
+            <div class="p-2 border-2 border-gray-200 rounded-md h-[75vh] flex flex-col overflow-y-hidden">
+                <div v-if="messages && messages?.length > 0" ref="messagesContainer">
                     <div v-for="msg in messages" :key="msg._id">
                         <div class="w-full flex justify-center">
                             <span class="px-2 py-1 rounded-sm text-xs bg-gray-100">{{
@@ -212,25 +269,28 @@ onBeforeUnmount(() => {
                             </li>
                         </ul>
                     </div>
+                    <div class="w-full h-4 pb-48">&nbsp;</div> <!-- allows the last message to be visible through scrollIntoView JS method -->
                 </div>
                 <div class="w-full h-full">&nbsp;</div>
-                <!--#region typing indicator-->
-                <div class="flex items-center gap-4 mt-6 mb-2">
-                    <img class="h-8 w-8" src="" alt="" v-if="false" />
-                    <div :style="`border:1.5px solid #FF0000`"
-                        class="h-8 w-8 rounded-full flex items-center justify-center text-sm" v-else>
-                        {{ useInitials(activeRecipients![0].name) }}
+                <div class="absolute bottom-0 inset-x-0 mb-2 mx-2">
+                    <!--#region typing indicator-->
+                    <div class="flex items-center gap-4 ml-2">
+                        <img class="h-8 w-8" src="" alt="" v-if="false" />
+                        <div :style="`border:1.5px solid #FF0000`"
+                            class="h-8 w-8 rounded-full flex items-center justify-center text-sm" v-else>
+                            {{ useInitials(activeRecipients![0].name) }}
+                        </div>
+                        <AppTypingEffect />
                     </div>
-                    <AppTypingEffect />
+                    <!--#endregion-->
+                    <!--#region chat input-->
+                    <div class="flex p-2 mt-1 rounded-md bg-gray-100">
+                        <input class="w-full rounded-md bg-gray-100 pr-2 focus:outline-none" type="text" name="send-message"
+                            id="send-message" v-model="myMessage" />
+                        <button class="btn btn-red" type="button" @click="sendMessage">Send</button>
+                    </div>
+                    <!--#endregion-->
                 </div>
-                <!--#endregion-->
-                <!--#region chat input-->
-                <div class="flex p-2 mt-1 rounded-md bg-gray-100">
-                    <input class="w-full rounded-md bg-gray-100 pr-2 focus:outline-none" type="text" name="send-message"
-                        id="send-message" v-model="message" />
-                    <button class="btn btn-red" type="button" @click="sendMessage">Send</button>
-                </div>
-                <!--#endregion-->
             </div>
             <!--#endregion-->
         </section>
@@ -238,9 +298,10 @@ onBeforeUnmount(() => {
             class="hidden md:block md:w-full md:flex md:items-center md:justify-center md:border-2 md:border-gray-200 md:rounded-md md:h-[75vh]"
             v-else>
             <div class="text-center">
-            <h2 class="heading-2">Its empty here</h2>
-            <p>Open a conversation or start one</p>
-        </div>
-    </section>
-    <!--#endregion-->
-</main></template>
+                <h2 class="heading-2">Its empty here</h2>
+                <p>Open a conversation or start one</p>
+            </div>
+        </section>
+        <!--#endregion-->
+    </main>
+</template>

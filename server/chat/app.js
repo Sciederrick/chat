@@ -25,7 +25,7 @@ try {
       console.log("🚀 ~ file: app.js:40 ~ socket.on ~ join:", roomId);
     });
     
-    socket.on("send-message", (message) => {
+    socket.on("message", (message) => {
       const receiverSocketId = findReceiverSocketId(message.receiverId, users);
       if (
         (message.role == "client" || message.role == "admin") &&
@@ -41,7 +41,7 @@ try {
       }
     });
 
-    socket.on("user-disconnect", () => {
+    socket.on("user-disconnect", (userId) => {
       const senderUser = findSender(socket.id, users);
       if (senderUser.isFound) {
         socket.broadcast.emit("user-disconnected", senderUser.userId);

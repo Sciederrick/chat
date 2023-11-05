@@ -89,4 +89,21 @@ export interface AllMessages {
     timestamp: string
 }
 
+export interface MessageObject {
+    conversationId: string,
+    senderId: string,
+    receiverId: string,
+    role: Role,
+    message: string,
+    timestamp: Date,
+    directMessage: boolean
+}
+
+export enum Role {
+   Admin = 'admin',
+   Moderator = 'moderator',
+   Group = 'group',
+   Client = 'client'
+}
+
 
