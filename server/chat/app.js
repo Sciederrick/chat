@@ -26,7 +26,6 @@ try {
     });
     
     socket.on("send-message", (message) => {
-      // console.log("io.sockets: ", io.sockets.sockets);
       const receiverSocketId = findReceiverSocketId(message.receiverId, users);
       if (
         (message.role == "client" || message.role == "admin") &&
@@ -43,7 +42,7 @@ try {
     });
 
     socket.on("user-disconnect", () => {
-      const senderUser = findSenderUser(socket.id, users);
+      const senderUser = findSender(socket.id, users);
       if (senderUser.isFound) {
         socket.broadcast.emit("user-disconnected", senderUser.userId);
         delete users[senderUser.userId];
@@ -64,7 +63,7 @@ function findReceiverSocketId(receiverId, users) {
   };
 }
 
-function findSenderUser(socketId, users) {
+function findSender(socketId, users) {
   if (Object.keys(users).length === 0) return { isFound: false };
 
   let foundUserId = null;

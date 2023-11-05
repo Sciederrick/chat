@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { GroupConversation, PrivateConversation, MessageBatches, Recipient} from '~/types/index';
+import { Socket } from "socket.io-client";
+import { GroupConversation, PrivateConversation, MessageBatches, Recipient } from '~/types/index';
 import { useProfileStore } from '~/store/profile';
-import { storeToRefs }  from 'pinia';
+import { storeToRefs } from 'pinia';
 
 const { useInitials, useLightenHexColor } = useUtils();
 const profileStore = useProfileStore();
@@ -20,7 +21,7 @@ const isActiveConversation = computed(() => {
 })
 
 
-function viewConversation(id: string, recipients:Recipient[]) {
+function viewConversation(id: string, recipients: Recipient[]) {
     activeConversationId.value = id;
     activeRecipients.value = recipients;
     loadMessages(id);
@@ -38,10 +39,10 @@ function toggleLeftSidebar() {
 
 const messages = ref<MessageBatches[] | null>(null);
 async function loadMessages(conversationId: string) {
-   const { useLoadMessages } =  useMessages();
-   const response = await useLoadMessages(conversationId);
+    const { useLoadMessages } = useMessages();
+    const response = await useLoadMessages(conversationId);
 
-   messages.value = response && response.length > 0 ? response : null;
+    messages.value = response && response.length > 0 ? response : null;
 }
 
 const templateImages = ref(useUtils().useAssetImages());
@@ -68,14 +69,32 @@ async function loadConversations() {
     }
 }
 
-function getRecipientName(senderId: string) :string {
+function getRecipientName(senderId: string): string {
     const senderProfile = activeRecipients.value!.find(recipient => recipient.id == senderId);
     return senderProfile!.name;
 }
 
+const message = ref<string | null>(null);
+let { socket } = useNuxtApp();
+
+function sendMessage() {
+    if (message.value) {
+        (socket as Socket).emit('message', {
+            conversationId: activeConversationId.value,
+            senderId: me.value!.id,
+            receiverId: activeRecipients.value![0],
+            role: activeRecipients.value!.length > 2 ? "group" : "client",
+            message: message.value,
+            timestamp: new Date(),
+            directMessage: activeRecipients.value!.length > 2 ? false : true
+        });
+    }
+
+}
+
 onBeforeMount(async () => {
     loadMyProfile();
-    if(me.value) await loadConversations();
+    if (me.value) await loadConversations();
 });
 
 const innerWidth = ref<number>(window.innerWidth);
@@ -105,7 +124,8 @@ onBeforeUnmount(() => {
     </header>
     <main class="px-2 md:flex 2xl:container 2xl:mx-auto">
         <!--#region left sidebar-->
-        <aside :class="{ hidden: isActiveConversation }" class="pr-2 w-full md:block md:w-1/3 lg:w-[350px]" v-show="isShowLeftSidebar">
+        <aside :class="{ hidden: isActiveConversation }" class="pr-2 w-full md:block md:w-1/3 lg:w-[350px]"
+            v-show="isShowLeftSidebar">
             <button class="btn btn-black fixed bottom-8 right-2 md:static md:my-4" type="button">
                 <Icon name="streamline:interface-edit-pencil-change-edit-modify-pencil-write-writing" />
                 New Message
@@ -162,24 +182,32 @@ onBeforeUnmount(() => {
                 <div v-if="messages && messages?.length > 0">
                     <div v-for="msg in messages" :key="msg._id">
                         <div class="w-full flex justify-center">
-                            <span class="px-2 py-1 rounded-sm text-xs bg-gray-100">{{ useUtils().useHumanReadableDate(msg._id) }}</span>
+                            <span class="px-2 py-1 rounded-sm text-xs bg-gray-100">{{
+                                useUtils().useHumanReadableDate(msg._id) }}</span>
                         </div>
-                        <ul class="w-full h-full flex flex-col overflow-y-auto" v-if="msg.allMessages && msg.allMessages.length > 0">
-                            <li v-for="msg in msg.allMessages" :key="msg.timestamp" :class="{ 'justify-end': msg.senderId == me!.id }"
+                        <ul class="w-full h-full flex flex-col overflow-y-auto"
+                            v-if="msg.allMessages && msg.allMessages.length > 0">
+                            <li v-for="msg in msg.allMessages" :key="msg.timestamp"
+                                :class="{ 'justify-end': msg.senderId == me!.id }"
                                 class="relative flex items-end gap-x-4 py-1 my-4 font-semibold">
-                                <img :class="{ 'order-last': msg.senderId == me!.id }" class="h-8 w-8" src="" alt="" v-if="false" />
+                                <img :class="{ 'order-last': msg.senderId == me!.id }" class="h-8 w-8" src="" alt=""
+                                    v-if="false" />
                                 <div :style="[msg.senderId == me!.id ? `border: 1.5px solid #A0D6B4` : `border:1.5px solid #ED2647`]"
                                     :class="{ 'order-last': msg.senderId == me!.id }"
                                     class="h-8 w-8 rounded-full flex items-center justify-center text-sm" v-else>
-                                    {{ useInitials(msg.senderId == me!.id ? me!.bio.fullName : getRecipientName(msg.senderId)) }} 
+                                    {{ useInitials(msg.senderId == me!.id ? me!.bio.fullName :
+                                        getRecipientName(msg.senderId)) }}
                                 </div>
                                 <div :style="[msg.senderId == me!.id ? `background-color:${useLightenHexColor('#A0D6B4', 75)}` : `background-color:${useLightenHexColor('#ED2647', 75)}`]"
-                                    :class="[msg.senderId != me!.id ? 'rounded-bl-none' : 'rounded-br-none']" class="p-1.5 rounded-xl">
+                                    :class="[msg.senderId != me!.id ? 'rounded-bl-none' : 'rounded-br-none']"
+                                    class="p-1.5 rounded-xl">
                                     {{ msg.message }}</div>
                                 <div :class="[msg.senderId == me!.id ? 'right-12' : 'left-12']"
                                     class="absolute -bottom-4 text-xs font-normal">
-                                    <span class="text-gray-700 font-medium">{{ msg.senderId == me!.id ? "Me" : getRecipientName(msg.senderId) }}</span>&nbsp; 
-                                    <span class="text-gray-400"> {{ useUtils().useHumanReadableTime(msg.timestamp) }} </span>
+                                    <span class="text-gray-700 font-medium">{{ msg.senderId == me!.id ? "Me" :
+                                        getRecipientName(msg.senderId) }}</span>&nbsp;
+                                    <span class="text-gray-400"> {{ useUtils().useHumanReadableTime(msg.timestamp) }}
+                                    </span>
                                 </div>
                             </li>
                         </ul>
@@ -199,8 +227,8 @@ onBeforeUnmount(() => {
                 <!--#region chat input-->
                 <div class="flex p-2 mt-1 rounded-md bg-gray-100">
                     <input class="w-full rounded-md bg-gray-100 pr-2 focus:outline-none" type="text" name="send-message"
-                        id="send-message" />
-                    <button class="btn btn-red" type="button">Send</button>
+                        id="send-message" v-model="message" />
+                    <button class="btn btn-red" type="button" @click="sendMessage">Send</button>
                 </div>
                 <!--#endregion-->
             </div>
@@ -210,10 +238,9 @@ onBeforeUnmount(() => {
             class="hidden md:block md:w-full md:flex md:items-center md:justify-center md:border-2 md:border-gray-200 md:rounded-md md:h-[75vh]"
             v-else>
             <div class="text-center">
-                <h2 class="heading-2">Its empty here</h2>
-                <p>Open a conversation or start one</p>
-            </div>
-        </section>
-        <!--#endregion-->
-    </main>
-</template>
+            <h2 class="heading-2">Its empty here</h2>
+            <p>Open a conversation or start one</p>
+        </div>
+    </section>
+    <!--#endregion-->
+</main></template>
