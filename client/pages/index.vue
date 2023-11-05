@@ -94,7 +94,7 @@ function sendMessage() {
 
 }
 
-const messagesContainer = ref<HTMLElement|null>(null);
+const messagesContainer = ref<HTMLElement | null>(null);
 function addMessageToUi(messageObject: MessageObject) {
     const msgGroupId = messageObject.timestamp.toISOString().slice(0, 10);
     const uiMsgObject = {
@@ -122,7 +122,7 @@ function addMessageToUi(messageObject: MessageObject) {
                 _id: msgGroupId,
                 allMessages: []
             });
-            messages.value[messages.value.length -1].allMessages.push(uiMsgObject);
+            messages.value[messages.value.length - 1].allMessages.push(uiMsgObject);
         }
     }
     scrollDown();
@@ -131,9 +131,9 @@ function addMessageToUi(messageObject: MessageObject) {
 
 function scrollDown() {
     (messagesContainer.value as HTMLElement).lastElementChild!.scrollIntoView({
-      behavior: "smooth",
-      block: "end",
-      inline: "end",
+        behavior: "smooth",
+        block: "end",
+        inline: "end",
     });
 }
 
@@ -269,7 +269,8 @@ onBeforeUnmount(() => {
                             </li>
                         </ul>
                     </div>
-                    <div class="w-full h-4 pb-48">&nbsp;</div> <!-- allows the last message to be visible through scrollIntoView JS method -->
+                    <div class="w-full h-4 pb-48">&nbsp;</div>
+                    <!-- allows the last message to be visible through scrollIntoView JS method -->
                 </div>
                 <div class="w-full h-full">&nbsp;</div>
                 <div class="absolute bottom-0 inset-x-0 mb-2 mx-2">
@@ -286,7 +287,7 @@ onBeforeUnmount(() => {
                     <!--#region chat input-->
                     <div class="flex p-2 mt-1 rounded-md bg-gray-100">
                         <input class="w-full rounded-md bg-gray-100 pr-2 focus:outline-none" type="text" name="send-message"
-                            id="send-message" v-model="myMessage" />
+                            id="send-message" v-model="myMessage" @keyup.enter="sendMessage" />
                         <button class="btn btn-red" type="button" @click="sendMessage">Send</button>
                     </div>
                     <!--#endregion-->

@@ -1,6 +1,9 @@
 require("dotenv").config();
+
 const { createServer } = require("http");
 const { Server } = require("socket.io");
+
+const messageModel = require("./../mongo/models/message");
 
 const users = {};
 
@@ -19,25 +22,32 @@ try {
       };
       console.log(`connected: ${userId}`);
     });
-    
+
     socket.on("join-room", (roomId) => {
       socket.join(`room-${roomId}`);
       console.log("🚀 ~ file: app.js:40 ~ socket.on ~ join:", roomId);
     });
-    
-    socket.on("message", (message) => {
+
+    socket.on("message", async (message) => {
       const receiverSocketId = findReceiverSocketId(message.receiverId, users);
-      if (
-        (message.role == "client" || message.role == "admin") &&
-        receiverSocketId.isFound
-      ) {
-        io.to(receiverSocketId.socketId).emit("message", message);
-      } else if (message.role == "group") {
-        socket.join(`room-${message.receiverId}`);
-        socket.broadcast
-          .to(`room-${message.receiverId}`)
-          .emit("message", message);
+      const newMsg = new messageModel(message);
+      const storedMsg = await newMsg.save();
+      console.log("🚀 ~ file: app.js:35 ~ socket.on ~ storedMsg:", storedMsg)
+      if (storedMsg) {
+        if (
+          (message.role == "client" || message.role == "admin") &&
+          receiverSocketId.isFound &&
+          newMsg
+        ) {
+          io.to(receiverSocketId.socketId).emit("message", message);
+        } else if (message.role == "group" && newMsg) {
+          socket.join(`room-${message.receiverId}`);
+          socket.broadcast
+            .to(`room-${message.receiverId}`)
+            .emit("message", message);
+        }
       } else {
+        // @TODO: what happens when the the msg isn't stored in the DB
       }
     });
 
