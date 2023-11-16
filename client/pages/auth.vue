@@ -13,7 +13,7 @@ const isAssignProfileBtnDisabled = computed(() => {
 
 const isProfileFetchError = ref<Boolean>(false);
 async function assignProfile() {
-    const { data, status } = await useFetch(`http://localhost:3080/api/v1/profiles/${gender.value ?? "A"}/random`);
+    const { data, status } = await useFetch(`http://localhost:3098/api/v1/profiles/${gender.value ?? "A"}/random`);
 
     if (status.value != "success") {
         isProfileFetchError.value = true;

@@ -54,7 +54,10 @@ const userAvatar = computed<string>(() => {
 
 function loadMyProfile() {
     loadMyProfileFromLocalStorage();
-    if (!me.value) assignDefaultUser();
+    if (!me.value) {
+        assignDefaultUser();
+        navigateTo('auth')
+    }
 }
 
 async function loadConversations() {
