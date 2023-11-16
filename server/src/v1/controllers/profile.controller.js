@@ -117,6 +117,9 @@ profileController.getRandomProfile = async (req, res) => {
       condition = {};
     }
 
+    const possibleValues = ['admin', 'client',  'moderator'];
+    condition.role = { $in: possibleValues };
+
     const foundProfiles = await profileModel.find(condition, "-password");
     const numProfiles = foundProfiles.length;
 

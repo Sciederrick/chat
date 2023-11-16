@@ -106,4 +106,6 @@ export enum Role {
    Client = 'client'
 }
 
+export interface ContactProfile extends Recipient {}
+
 

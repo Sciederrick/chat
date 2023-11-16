@@ -8,7 +8,7 @@ const { useInitials, useLightenHexColor } = useUtils();
 const profileStore = useProfileStore();
 
 const { me } = storeToRefs(profileStore);
-const { assignDefaultUser, loadMyProfileFromLocalStorage } = profileStore;
+const { loadMyProfileFromLocalStorage } = profileStore;
 
 const privateConversations = ref<PrivateConversation[] | null>(null);
 const groupConversations = ref<GroupConversation[] | null>(null);
@@ -45,19 +45,9 @@ async function loadMessages(conversationId: string) {
     messages.value = response && response.length > 0 ? response : null;
 }
 
-const templateImages = ref(useUtils().useAssetImages());
-
-const userAvatar = computed<string>(() => {
-    const key = me.value!.isMale ? 'male-avatar' : 'female-avatar';
-    return templateImages.value?.[key];
-});
-
 function loadMyProfile() {
     loadMyProfileFromLocalStorage();
-    if (!me.value) {
-        assignDefaultUser();
-        navigateTo('auth')
-    }
+    if (!me.value) navigateTo('auth');
 }
 
 async function loadConversations() {
@@ -173,21 +163,13 @@ onBeforeUnmount(() => {
 });
 </script>
 <template>
-    <header class="flex justify-between items-center py-4 px-2 2xl:container 2xl:mx-auto">
-        <img src="~/assets/logo-no-background.svg" height="60" width="160" alt="company logo" />
-        <div class="md:flex md:gap-4 md:items-center">
-            <img :src="userAvatar" height="35" width="35" alt="user avatar" :title="me!.bio.fullName" />
-            <p class="text-xs text-center md:text-xl md:order-first md:font-semibold">
-                {{ useInitials(me!.bio.fullName) }}
-            </p>
-        </div>
-    </header>
+    <AppHeader/>
     <main class="px-2 md:flex 2xl:container 2xl:mx-auto">
         <!--#region left sidebar-->
         <aside :class="{ hidden: isActiveConversation }" class="pr-2 w-full md:block md:w-1/3 lg:w-[350px]"
             v-show="isShowLeftSidebar">
-            <button class="btn btn-black fixed bottom-8 right-2 md:static md:my-4" type="button">
-                <Icon name="streamline:interface-edit-pencil-change-edit-modify-pencil-write-writing" />
+            <button class="btn btn-black fixed bottom-8 right-2 md:static md:my-4" type="button" @click="navigateTo('/contact')">
+                <Icon name="streamline:interface-edit-pencil-change-edit-modify-pencil-write-writing" />&nbsp;
                 New Message
             </button>
             <!--#region group conversations-->

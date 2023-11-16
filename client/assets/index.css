@@ -13,7 +13,7 @@
 
 @layer components {
     .btn {
-        @apply px-2 py-2 shadow-none shadow-md font-semibold rounded-md md:px-4;
+        @apply p-2 shadow-none shadow-md font-semibold rounded-md md:px-4;
     }
     .btn-red {
         @apply bg-[--mid-red] text-white hover:bg-[--deep-red];
