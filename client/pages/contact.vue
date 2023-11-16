@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ContactProfile } from '~/types/index';
+import { ContactProfile, Role } from '~/types/index';
 import { useProfileStore } from '~/store/profile';
 import { storeToRefs } from 'pinia';
 
@@ -39,7 +39,8 @@ function loadDummyContactProfiles() {
             about: 'Checking modern issues with data tools. I deep-dive into government efforts and highlight weaknesses & impact. Ensuring the government of the day is put in check.',
             links: undefined,
             color: '#bbff00',
-            gender: 'M'
+            gender: 'M',
+            role: Role.Client
         },
         {
             id: '123dfg34fg12se',
@@ -49,7 +50,8 @@ function loadDummyContactProfiles() {
             about: 'Building data pipelines to ensure a smooth flow of information from one stage to the next. Ensuring Data Scientists do not engage in repeatable work and focus on creative work.',
             links: undefined,
             color: '#ffff10',
-            gender: 'M'
+            gender: 'M',
+            role: Role.Client
         },
     ]
     activeContactProfile.value = contactProfiles.value[0];
@@ -131,10 +133,25 @@ onBeforeMount(() => {
                         <Icon name="streamline:mail-send-email-message" />&nbsp;
                         Message
                     </button>
-                    <button type="button" class="font-bold text-green-600 hover:text-green-400">
-                        <Icon name="material-symbols:person-add-outline" v-if="true" />
-                        <Icon name="material-symbols:person-remove-outline" v-else />&nbsp;
-                        Save Contact
+                    <button type="button" class="font-bold text-green-600 hover:text-green-400" v-if="activeContactProfile?.role != Role.Group">
+                        <span v-if="true">
+                            <Icon name="material-symbols:person-add-outline"/>&nbsp;
+                            Save Contact
+                        </span>
+                        <span v-else>
+                            <Icon name="material-symbols:person-remove-outline"/>&nbsp;
+                            Delete Contact
+                        </span>
+                    </button>
+                    <button class="font-bold text-green-600 hover:text-green-400" v-else>
+                        <span v-if="true">
+                            <Icon name="fluent:arrow-enter-16-filled"/>&nbsp;
+                            Join Group
+                        </span>
+                        <span v-else>
+                            <Icon name="fluent:arrow-exit-20-filled"/>&nbsp;
+                            Exit Group
+                        </span>
                     </button>
                 </div>
             </section>
